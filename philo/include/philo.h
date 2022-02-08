@@ -20,6 +20,7 @@ typedef	struct s_philo
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	int				index;
+	struct timeval	*start;
 }	t_philo;
 
 #endif
