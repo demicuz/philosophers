@@ -18,7 +18,7 @@
 #include <philo.h>
 
 #define PHILO_NUM 4
-#define TIME_DEATH 410
+#define TIME_DEATH 800
 #define TIME_EAT 200
 #define TIME_SLEEP 200
 
@@ -30,32 +30,6 @@ long	time_passed(struct timeval *start)
 	gettimeofday(&now, NULL);
 	return (now.tv_sec - start->tv_sec) * 1000 + ((now.tv_usec - start->tv_usec) / 1000);
 }
-
-// void	*routine(void *philo_data)
-// {
-// 	t_philo 		*p;
-// 	long			now_millis;
-
-// 	p = philo_data;
-// 	printf("%d %d is thinking\n", 0, p->index);
-// 	while (1)
-// 	{
-// 		pthread_mutex_lock(p->left_fork);
-// 		printf("%ld %d has taken a fork\n", time_passed(p->start), p->index);
-// 		pthread_mutex_lock(p->right_fork);
-// 		printf("%ld %d has taken a fork\n", time_passed(p->start), p->index);
-// 		now_millis = time_passed(p->start);
-// 		printf("%ld %d is eating\n", now_millis, p->index);
-// 		p->last_eaten = now_millis;
-// 		usleep(TIME_EAT * 1000);
-// 		pthread_mutex_unlock(p->left_fork);
-// 		pthread_mutex_unlock(p->right_fork);
-// 		printf("%ld %d is sleeping\n", time_passed(p->start), p->index);
-// 		usleep(TIME_SLEEP * 1000);
-// 		printf("%ld %d is thinking\n", time_passed(p->start), p->index);
-// 	}
-// 	pthread_exit(NULL);
-// }
 
 void	take_forks(t_philo *p)
 {
@@ -122,6 +96,7 @@ void	*routine_death(void *philo_data)
 		else
 		{
 			printf("%ld %d died\n", time_passed(p->start), p->index);
+			close(1);
 			pthread_exit(NULL);
 		}
 	}
@@ -168,54 +143,85 @@ void	destroy_mutexes(pthread_mutex_t *forks, int n)
 	}
 }
 
+void	join_threads(pthread_t *philos, pthread_t *death_checkers)
+{
+	int	i;
+
+	i = 0;
+	while (i < PHILO_NUM)
+	{
+		if (pthread_join(philos[i], NULL) != 0)
+			exit(EXIT_FAILURE);
+		i++;
+	}
+	i = 0;
+	while (i < PHILO_NUM)
+	{
+		if (pthread_join(death_checkers[i], NULL) != 0)
+			exit(EXIT_FAILURE);
+		i++;
+	}
+}
+
+void	run_simulation(t_philo *philos_data, pthread_t *philos, pthread_t *death_checkers)
+{
+	struct timeval	start;
+	int				i;
+
+	i = 0;
+	while (i < PHILO_NUM)
+	{
+		philos_data[i].start = &start;
+		i++;
+	}
+	i = 0;
+	gettimeofday(&start, NULL);
+	while (i < PHILO_NUM)
+	{
+		if (pthread_create(&philos[i], NULL, &routine, &philos_data[i]) != 0)
+			exit(EXIT_FAILURE);
+		i++;
+	}
+	i = 0;
+	while (i < PHILO_NUM)
+	{
+		if (pthread_create(&death_checkers[i], NULL, &routine_death, &philos_data[i]) != 0)
+			exit(EXIT_FAILURE);
+		i++;
+	}
+	join_threads(philos, death_checkers);
+}
+
+void	init_and_run()
+{
+	pthread_t		*philos;
+	pthread_t		*death_checkers;
+	t_philo			*philos_data;
+	pthread_mutex_t	*forks;
+	int				i;
+
+	philos = malloc(sizeof(pthread_t) * PHILO_NUM);
+	death_checkers = malloc(sizeof(pthread_t) * PHILO_NUM);
+	philos_data = malloc(sizeof(t_philo) * PHILO_NUM);
+	forks = malloc(sizeof(pthread_mutex_t) * PHILO_NUM * 2);
+	if (!philos || !death_checkers || !philos_data || !forks)
+		exit(EXIT_FAILURE);
+	i = 0;
+	while (i < PHILO_NUM)
+	{
+		pthread_mutex_init(&forks[i * 2], NULL);
+		pthread_mutex_init(&forks[i * 2 + 1], NULL);
+		philos_data[i].index = i;
+		i++;
+	}
+	distribute_forks(philos_data, forks, PHILO_NUM * 2);
+	run_simulation(philos_data, philos, death_checkers);
+	destroy_mutexes(forks, PHILO_NUM * 2);
+}
 
 int main(int argc, const char *argv[])
 {
-	pthread_t *philos = malloc(sizeof(pthread_t) * PHILO_NUM);
-	pthread_t *death_checkers = malloc(sizeof(pthread_t) * PHILO_NUM);
-	t_philo *philos_data = malloc(sizeof(t_philo) * PHILO_NUM);
-	pthread_mutex_t *forks = malloc(sizeof(pthread_mutex_t) * PHILO_NUM * 2);
-	struct timeval	start;
-
-	if (!philos || !death_checkers || !philos_data || !forks)
-		exit(1);
-	for (int i = 0; i < PHILO_NUM; ++i)
-		pthread_mutex_init(&forks[i], NULL);
-
-	for (int i = 0; i < PHILO_NUM; ++i)
-	{
-		philos_data[i].index = i;
-		philos_data[i].start = &start;
-		// if (i == 0)
-		// {
-		// 	philos_data[i].left_fork = &forks[(i + 1) % PHILO_NUM];
-		// 	philos_data[i].right_fork = &forks[i];
-		// }
-		// else
-		// {
-		// 	philos_data[i].left_fork = &forks[i];
-		// 	philos_data[i].right_fork = &forks[(i + 1) % PHILO_NUM];
-		// }
-	}
-	distribute_forks(philos_data, forks, PHILO_NUM * 2);
-
-	// Start simulation
-	gettimeofday(&start, NULL);
-	for (int i = 0; i < PHILO_NUM; ++i)
-	{
-		if (pthread_create(&philos[i], NULL, &routine, &philos_data[i]) != 0)
-			exit(1);
-	}
-	for (int i = 0; i < PHILO_NUM; ++i)
-	{
-		if (pthread_create(&death_checkers[i], NULL, &routine_death, &philos_data[i]) != 0)
-			exit(1);
-	}
-	for (int i = 0; i < PHILO_NUM; ++i)
-	{
-		if (pthread_join(philos[i], NULL) != 0)
-			exit(1);
-	}
-	destroy_mutexes(forks, PHILO_NUM * 2 - 1);
-	exit(0);
+	init_and_run();
+	
+	exit(EXIT_SUCCESS);
 }
