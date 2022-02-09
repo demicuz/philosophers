@@ -21,6 +21,8 @@ typedef	struct s_philo
 	pthread_mutex_t	*right_fork;
 	int				index;
 	struct timeval	*start;
+	// struct timeval	*last_eaten;
+	long			last_eaten;
 }	t_philo;
 
 #endif
