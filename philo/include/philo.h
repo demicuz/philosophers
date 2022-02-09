@@ -19,6 +19,12 @@ typedef	struct s_philo
 {
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
+
+	pthread_mutex_t	*fork1_for_me;
+	pthread_mutex_t	*fork2_for_me;
+	pthread_mutex_t	*fork1_for_neighbor;
+	pthread_mutex_t	*fork2_for_neighbor;
+
 	int				index;
 	struct timeval	*start;
 	// struct timeval	*last_eaten;
