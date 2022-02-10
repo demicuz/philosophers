@@ -11,7 +11,7 @@ OBJ			:= $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 CC			:= cc
 CPPFLAGS	:= -I include -MMD -MP
-CFLAGS		:= -g -pthread -Wall#-Werror -Wextra -O1
+CFLAGS		:= -g -pthread -Wall -Werror -Wextra -O1
 LDFLAGS		:= -pthread
 LDLIBS		:=
 

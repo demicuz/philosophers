@@ -14,21 +14,29 @@
 # define PHILO_H
 
 # include <pthread.h>
+# include <stdbool.h>
 
 typedef	struct s_philo
 {
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-
 	pthread_mutex_t	*fork1_for_me;
 	pthread_mutex_t	*fork2_for_me;
 	pthread_mutex_t	*fork1_for_neighbor;
 	pthread_mutex_t	*fork2_for_neighbor;
-
-	int				index;
+	
 	struct timeval	*start;
-	// struct timeval	*last_eaten;
 	long			last_eaten;
+	int				index;
+
+	bool			*death;
 }	t_philo;
+
+typedef struct s_state
+{
+	pthread_t		*philos;
+	pthread_t		*death_checkers;
+	t_philo			*philos_data;
+	pthread_mutex_t	*forks;
+	bool			death;
+}	t_state;
 
 #endif

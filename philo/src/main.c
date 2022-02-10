@@ -86,7 +86,7 @@ void	*routine_death(void *philo_data)
 
 	p = philo_data;
 	usleep(TIME_DEATH * 1000 + 500);
-	while (1)
+	while (!*p->death)
 	{
 		gettimeofday(&now, NULL);
 		now_millis = (now.tv_sec - p->start->tv_sec) * 1000 + ((now.tv_usec - p->start->tv_usec) / 1000);
@@ -97,9 +97,11 @@ void	*routine_death(void *philo_data)
 		{
 			printf("%ld %d died\n", time_passed(p->start), p->index);
 			close(1);
-			pthread_exit(NULL);
+			// TODO unlock fork mutexes so philos get unstuck and check for death
+			*p->death = true;
 		}
 	}
+	pthread_exit(NULL);
 }
 
 // TODO what if we have only one philosopher?
@@ -189,39 +191,43 @@ void	run_simulation(t_philo *philos_data, pthread_t *philos, pthread_t *death_ch
 			exit(EXIT_FAILURE);
 		i++;
 	}
-	join_threads(philos, death_checkers);
+	// join_threads(philos, death_checkers);
 }
 
-void	init_and_run()
+void	init_vars(t_state *s)
 {
-	pthread_t		*philos;
-	pthread_t		*death_checkers;
-	t_philo			*philos_data;
-	pthread_mutex_t	*forks;
-	int				i;
+	int	i;
 
-	philos = malloc(sizeof(pthread_t) * PHILO_NUM);
-	death_checkers = malloc(sizeof(pthread_t) * PHILO_NUM);
-	philos_data = malloc(sizeof(t_philo) * PHILO_NUM);
-	forks = malloc(sizeof(pthread_mutex_t) * PHILO_NUM * 2);
-	if (!philos || !death_checkers || !philos_data || !forks)
+	s->philos = malloc(sizeof(pthread_t) * PHILO_NUM);
+	s->death_checkers = malloc(sizeof(pthread_t) * PHILO_NUM);
+	s->philos_data = malloc(sizeof(t_philo) * PHILO_NUM);
+	s->forks = malloc(sizeof(pthread_mutex_t) * PHILO_NUM * 2);
+	if (!s->philos || !s->death_checkers || !s->philos_data || !s->forks)
 		exit(EXIT_FAILURE);
 	i = 0;
 	while (i < PHILO_NUM)
 	{
-		pthread_mutex_init(&forks[i * 2], NULL);
-		pthread_mutex_init(&forks[i * 2 + 1], NULL);
-		philos_data[i].index = i;
+		pthread_mutex_init(&s->forks[i * 2], NULL);
+		pthread_mutex_init(&s->forks[i * 2 + 1], NULL);
+		s->philos_data[i].index = i;
+		s->philos_data[i].death = &s->death;
 		i++;
 	}
-	distribute_forks(philos_data, forks, PHILO_NUM * 2);
-	run_simulation(philos_data, philos, death_checkers);
-	destroy_mutexes(forks, PHILO_NUM * 2);
 }
 
-int main(int argc, const char *argv[])
+void	init_and_run()
+{
+	t_state			s;
+
+	init_vars(&s);
+	distribute_forks(s.philos_data, s.forks, PHILO_NUM * 2);
+	run_simulation(s.philos_data, s.philos, s.death_checkers);
+	// TODO probably a wrong approach as threads keep going after a philosopher death
+	destroy_mutexes(s.forks, PHILO_NUM * 2);
+}
+
+int main(void)
 {
 	init_and_run();
-	
 	exit(EXIT_SUCCESS);
 }
