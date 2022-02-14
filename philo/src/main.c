@@ -97,8 +97,9 @@ void	*routine_death(void *philo_data)
 		{
 			printf("%ld %d died\n", time_passed(p->start), p->index);
 			close(1);
-			// TODO unlock fork mutexes so philos get unstuck and check for death
 			*p->death = true;
+			// TODO unlock fork mutexes so philos get unstuck and check for death
+			// unlock_forks(p->forks), smth like this
 		}
 	}
 	pthread_exit(NULL);
@@ -191,35 +192,58 @@ void	run_simulation(t_philo *philos_data, pthread_t *philos, pthread_t *death_ch
 			exit(EXIT_FAILURE);
 		i++;
 	}
-	// join_threads(philos, death_checkers);
+	join_threads(philos, death_checkers);
 }
 
-void	init_vars(t_state *s)
+bool	state_malloc(t_state *s)
 {
-	int	i;
-
 	s->philos = malloc(sizeof(pthread_t) * PHILO_NUM);
 	s->death_checkers = malloc(sizeof(pthread_t) * PHILO_NUM);
 	s->philos_data = malloc(sizeof(t_philo) * PHILO_NUM);
 	s->forks = malloc(sizeof(pthread_mutex_t) * PHILO_NUM * 2);
-	if (!s->philos || !s->death_checkers || !s->philos_data || !s->forks)
-		exit(EXIT_FAILURE);
+	return (s->philos && s->death_checkers && s->philos_data && s->forks);
+}
+
+bool	init_vars(t_state *s)
+{
+	int	i;
+
+	if (!state_malloc(s))
+		return (false);
 	i = 0;
 	while (i < PHILO_NUM)
 	{
-		pthread_mutex_init(&s->forks[i * 2], NULL);
-		pthread_mutex_init(&s->forks[i * 2 + 1], NULL);
+		if (pthread_mutex_init(&s->forks[i * 2], NULL) != 0)
+		{
+			destroy_mutexes(s->forks, i * 2);
+			return (false);
+		}
+		if (pthread_mutex_init(&s->forks[i * 2 + 1], NULL) != 0)
+		{
+			destroy_mutexes(s->forks, i * 2 + 1);
+			return (false);
+		}
 		s->philos_data[i].index = i;
 		s->philos_data[i].death = &s->death;
 		i++;
 	}
+	return (true);
+}
+
+void	free_state(t_state *s)
+{
+	free(s->philos);
+	free(s->death_checkers);
+	free(s->philos_data);
+	free(s->forks);
 }
 
 void	init_and_run()
 {
 	t_state			s;
 
-	init_vars(&s);
+	if (!init_vars(&s))
+		free_state(&s);
 	distribute_forks(s.philos_data, s.forks, PHILO_NUM * 2);
 	run_simulation(s.philos_data, s.philos, s.death_checkers);
 	// TODO probably a wrong approach as threads keep going after a philosopher death
