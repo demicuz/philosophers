@@ -13,22 +13,21 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <sys/time.h>
 
 #include <philo.h>
 
-#define PHILO_NUM 4
+#define PHILO_NUM 5
 #define TIME_DEATH 800
 #define TIME_EAT 200
 #define TIME_SLEEP 200
 
-int global = 0;
-
 long	time_passed(struct timeval *start)
 {
-	struct timeval now;
+	struct timeval	now;
+
 	gettimeofday(&now, NULL);
-	return (now.tv_sec - start->tv_sec) * 1000 + ((now.tv_usec - start->tv_usec) / 1000);
+	return ((now.tv_sec - start->tv_sec) * 1000 + \
+	        ((now.tv_usec - start->tv_usec) / 1000));
 }
 
 void	take_forks(t_philo *p)
@@ -68,12 +67,30 @@ void	*routine(void *philo_data)
 
 	p = philo_data;
 	printf("%d %d is thinking\n", 0, p->index);
-	while (1)
+	while (!*p->death)
 	{
 		take_forks(p);
+		// TODO check for death here
+		if (*p->death)
+			pthread_exit(NULL);
 		eat(p);
 		release_forks(p);
+		if (*p->death)
+			pthread_exit(NULL);
 		take_a_nap(p);
+	}
+	pthread_exit(NULL);
+}
+
+void	unlock_all_forks(pthread_mutex_t *forks, int n)
+{
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		pthread_mutex_unlock(&forks[i]);
+		i++;
 	}
 }
 
@@ -91,7 +108,7 @@ void	*routine_death(void *philo_data)
 		gettimeofday(&now, NULL);
 		now_millis = (now.tv_sec - p->start->tv_sec) * 1000 + ((now.tv_usec - p->start->tv_usec) / 1000);
 		dt = now_millis - p->last_eaten;
-		if (dt <= TIME_DEATH)
+		if (dt <= TIME_DEATH && now_millis % 20 != 5)
 			usleep((TIME_DEATH - dt) * 1000 + 500);
 		else
 		{
@@ -99,7 +116,8 @@ void	*routine_death(void *philo_data)
 			close(1);
 			*p->death = true;
 			// TODO unlock fork mutexes so philos get unstuck and check for death
-			// unlock_forks(p->forks), smth like this
+			// unlock_all_forks(p->forks), smth like this
+			unlock_all_forks(p->all_forks, PHILO_NUM * 2);
 		}
 	}
 	pthread_exit(NULL);
@@ -153,46 +171,37 @@ void	join_threads(pthread_t *philos, pthread_t *death_checkers)
 	i = 0;
 	while (i < PHILO_NUM)
 	{
-		if (pthread_join(philos[i], NULL) != 0)
-			exit(EXIT_FAILURE);
+		pthread_join(philos[i], NULL);
 		i++;
 	}
 	i = 0;
 	while (i < PHILO_NUM)
 	{
-		if (pthread_join(death_checkers[i], NULL) != 0)
-			exit(EXIT_FAILURE);
+		pthread_join(death_checkers[i], NULL);
 		i++;
 	}
 }
 
-void	run_simulation(t_philo *philos_data, pthread_t *philos, pthread_t *death_checkers)
+bool	run_simulation(t_state *s)
 {
-	struct timeval	start;
 	int				i;
 
 	i = 0;
+	gettimeofday(&s->start, NULL);
 	while (i < PHILO_NUM)
 	{
-		philos_data[i].start = &start;
-		i++;
-	}
-	i = 0;
-	gettimeofday(&start, NULL);
-	while (i < PHILO_NUM)
-	{
-		if (pthread_create(&philos[i], NULL, &routine, &philos_data[i]) != 0)
-			exit(EXIT_FAILURE);
+		if (pthread_create(&s->philos[i], NULL, &routine, &s->philos_data[i]) != 0)
+			return (false);
 		i++;
 	}
 	i = 0;
 	while (i < PHILO_NUM)
 	{
-		if (pthread_create(&death_checkers[i], NULL, &routine_death, &philos_data[i]) != 0)
-			exit(EXIT_FAILURE);
+		if (pthread_create(&s->death_checkers[i], NULL, &routine_death, &s->philos_data[i]) != 0)
+			return (false);
 		i++;
 	}
-	join_threads(philos, death_checkers);
+	return (true);
 }
 
 bool	state_malloc(t_state *s)
@@ -223,7 +232,9 @@ bool	init_vars(t_state *s)
 			destroy_mutexes(s->forks, i * 2 + 1);
 			return (false);
 		}
+		s->philos_data[i].all_forks = s->forks;
 		s->philos_data[i].index = i;
+		s->philos_data[i].start = &s->start;
 		s->philos_data[i].death = &s->death;
 		i++;
 	}
@@ -243,15 +254,22 @@ void	init_and_run()
 	t_state			s;
 
 	if (!init_vars(&s))
+	{
+		printf("Erorr while allocating memory\n");
 		free_state(&s);
+	}
 	distribute_forks(s.philos_data, s.forks, PHILO_NUM * 2);
-	run_simulation(s.philos_data, s.philos, s.death_checkers);
+	if (!run_simulation(&s))
+		printf("Error while creating threads\n");
+	join_threads(s.philos, s.death_checkers);
+	// join_threads(s.philos, s.death_checkers);
 	// TODO probably a wrong approach as threads keep going after a philosopher death
 	destroy_mutexes(s.forks, PHILO_NUM * 2);
+	// free_state(&s);
 }
 
 int main(void)
 {
 	init_and_run();
-	exit(EXIT_SUCCESS);
+	return (0);
 }

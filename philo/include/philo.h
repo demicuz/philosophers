@@ -15,6 +15,7 @@
 
 # include <pthread.h>
 # include <stdbool.h>
+# include <sys/time.h>
 
 typedef	struct s_philo
 {
@@ -22,6 +23,7 @@ typedef	struct s_philo
 	pthread_mutex_t	*fork2_for_me;
 	pthread_mutex_t	*fork1_for_neighbor;
 	pthread_mutex_t	*fork2_for_neighbor;
+	pthread_mutex_t	*all_forks;
 	
 	struct timeval	*start;
 	long			last_eaten;
@@ -36,6 +38,8 @@ typedef struct s_state
 	pthread_t		*death_checkers;
 	t_philo			*philos_data;
 	pthread_mutex_t	*forks;
+	// TODO move timeval start here;
+	struct timeval	start;
 	bool			death;
 }	t_state;
 
