@@ -115,9 +115,8 @@ void	*routine_death(void *philo_data)
 			printf("%ld %d died\n", time_passed(p->start), p->index);
 			close(1);
 			*p->death = true;
-			// TODO unlock fork mutexes so philos get unstuck and check for death
-			// unlock_all_forks(p->forks), smth like this
 			unlock_all_forks(p->all_forks, PHILO_NUM * 2);
+			pthread_exit(NULL);
 		}
 	}
 	pthread_exit(NULL);
@@ -219,6 +218,7 @@ bool	init_vars(t_state *s)
 
 	if (!state_malloc(s))
 		return (false);
+	s->death = false;
 	i = 0;
 	while (i < PHILO_NUM)
 	{
@@ -262,12 +262,13 @@ void	init_and_run()
 	if (!run_simulation(&s))
 		printf("Error while creating threads\n");
 	join_threads(s.philos, s.death_checkers);
-	// join_threads(s.philos, s.death_checkers);
-	// TODO probably a wrong approach as threads keep going after a philosopher death
 	destroy_mutexes(s.forks, PHILO_NUM * 2);
-	// free_state(&s);
+	free_state(&s);
 }
 
+// TODO
+// 1) Parse program arguments
+// 2) Implement max number of meals
 int main(void)
 {
 	init_and_run();
