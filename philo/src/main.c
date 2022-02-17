@@ -119,7 +119,7 @@ void	*routine_min_eaten(void *philo_data)
 		p->times_eaten++;
 		if (p->times_eaten == p->args->must_eat_num)
 		{
-			(*p->philos_still_eating)--; // TODO seems like I need a mutex for this
+			(*p->philos_still_eating)--; // TODO seems like I need a mutex for this stuff
 			printf("Philos still eating: %d\n", *p->philos_still_eating);
 		}
 		terminate_if_all_eaten(p);
