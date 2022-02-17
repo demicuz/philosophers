@@ -16,8 +16,8 @@
 
 #include <philo.h>
 
-#define PHILO_NUM 5
-#define TIME_DEATH 400
+#define PHILO_NUM 4
+#define TIME_DEATH 410
 #define TIME_EAT 200
 #define TIME_SLEEP 200
 
@@ -61,6 +61,18 @@ void	take_a_nap(t_philo *p)
 	printf("%ld %d is thinking\n", time_passed(p->start), p->index);
 }
 
+void	unlock_all_forks(pthread_mutex_t *forks, int n)
+{
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		pthread_mutex_unlock(&forks[i]);
+		i++;
+	}
+}
+
 void	*routine(void *philo_data)
 {
 	t_philo 		*p;
@@ -81,6 +93,17 @@ void	*routine(void *philo_data)
 	pthread_exit(NULL);
 }
 
+void	terminate_if_all_eaten(t_philo *p)
+{
+	if (*p->philos_still_eating != 0)
+		return ;
+	close(1);
+	*p->death = true;
+	unlock_all_forks(p->all_forks, p->args->philo_num * 2);
+	pthread_exit(NULL);
+}
+
+// TODO this function
 void	*routine_min_eaten(void *philo_data)
 {
 	t_philo 		*p;
@@ -90,28 +113,22 @@ void	*routine_min_eaten(void *philo_data)
 	while (!*p->death)
 	{
 		take_forks(p);
-		// TODO check for death here
 		if (*p->death)
 			pthread_exit(NULL);
 		eat(p);
+		p->times_eaten++;
+		if (p->times_eaten == p->args->must_eat_num)
+		{
+			(*p->philos_still_eating)--; // TODO seems like I need a mutex for this
+			printf("Philos still eating: %d\n", *p->philos_still_eating);
+		}
+		terminate_if_all_eaten(p);
 		release_forks(p);
 		if (*p->death)
 			pthread_exit(NULL);
 		take_a_nap(p);
 	}
 	pthread_exit(NULL);
-}
-
-void	unlock_all_forks(pthread_mutex_t *forks, int n)
-{
-	int	i;
-
-	i = 0;
-	while (i < n)
-	{
-		pthread_mutex_unlock(&forks[i]);
-		i++;
-	}
 }
 
 void	*routine_death(void *philo_data)
@@ -202,13 +219,18 @@ void	join_threads(pthread_t *philos, pthread_t *death_checkers, int philo_num)
 
 bool	run_simulation(t_state *s, int philo_num)
 {
-	int				i;
+	philo_routine	rt;
+	int	i;
 
 	i = 0;
+	if (s->args->must_eat_num)
+		rt = &routine_min_eaten;
+	else
+		rt = &routine;
 	gettimeofday(&s->start, NULL);
 	while (i < philo_num)
 	{
-		if (pthread_create(&s->philos[i], NULL, &routine, &s->philos_data[i]) != 0)
+		if (pthread_create(&s->philos[i], NULL, rt, &s->philos_data[i]) != 0)
 			return (false);
 		i++;
 	}
@@ -238,6 +260,8 @@ void	init_philo_data(t_state *s, t_philo *p, int index)
 	p->index = index;
 	p->start = &s->start;
 	p->death = &s->death;
+	p->times_eaten = 0;
+	p->philos_still_eating = &s->philos_still_eating;
 }
 
 bool	init_vars(t_state *s, t_args *args)
@@ -248,6 +272,7 @@ bool	init_vars(t_state *s, t_args *args)
 		return (false);
 	s->death = false;
 	s->args = args;
+	s->philos_still_eating = args->philo_num;
 	i = 0;
 	while (i < args->philo_num * 2)
 	{
@@ -303,7 +328,7 @@ int main(int argc, char *argv[])
 	args.time_death = TIME_DEATH;
 	args.time_eat = TIME_EAT;
 	args.time_sleep = TIME_SLEEP;
-	args.must_eat_num = -1;
+	args.must_eat_num = 1;
 	init_and_run(&args);
 	return (0);
 }
