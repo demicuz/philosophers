@@ -61,4 +61,8 @@ typedef struct s_state
 
 typedef void	*(*philo_routine)(void *philo_data);
 
+// utils
+int	is_num(const char *s);
+int	ft_atoi_safe(const char *str, int *err);
+
 #endif

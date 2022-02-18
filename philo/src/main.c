@@ -16,18 +16,13 @@
 
 #include <philo.h>
 
-#define PHILO_NUM 5
-#define TIME_DEATH 800
-#define TIME_EAT 200
-#define TIME_SLEEP 200
-
 long	time_passed(struct timeval *start)
 {
 	struct timeval	now;
 
 	gettimeofday(&now, NULL);
 	return ((now.tv_sec - start->tv_sec) * 1000 + \
-	        ((now.tv_usec - start->tv_usec) / 1000));
+		((now.tv_usec - start->tv_usec) / 1000));
 }
 
 void	take_forks(t_philo *p)
@@ -75,7 +70,7 @@ void	unlock_all_forks(pthread_mutex_t *forks, int n)
 
 void	*routine(void *philo_data)
 {
-	t_philo 		*p;
+	t_philo	*p;
 
 	p = philo_data;
 	printf("%d %d is thinking\n", 0, p->index);
@@ -103,10 +98,9 @@ void	terminate_if_all_eaten(t_philo *p)
 	pthread_exit(NULL);
 }
 
-// TODO this function
 void	*routine_min_eaten(void *philo_data)
 {
-	t_philo 		*p;
+	t_philo	*p;
 
 	p = philo_data;
 	printf("%d %d is thinking\n", 0, p->index);
@@ -134,7 +128,7 @@ void	*routine_min_eaten(void *philo_data)
 
 void	*routine_death(void *philo_data)
 {
-	t_philo 		*p;
+	t_philo			*p;
 	struct timeval	now;
 	long			now_millis;
 	long			dt;
@@ -144,7 +138,8 @@ void	*routine_death(void *philo_data)
 	while (!*p->death)
 	{
 		gettimeofday(&now, NULL);
-		now_millis = (now.tv_sec - p->start->tv_sec) * 1000 + ((now.tv_usec - p->start->tv_usec) / 1000);
+		now_millis = (now.tv_sec - p->start->tv_sec) * 1000 + \
+			((now.tv_usec - p->start->tv_usec) / 1000);
 		dt = now_millis - p->last_eaten;
 		if (dt <= p->args->time_death)
 			usleep((p->args->time_death - dt) * 1000 + 500);
@@ -160,7 +155,7 @@ void	*routine_death(void *philo_data)
 	pthread_exit(NULL);
 }
 
-void	distribute_forks(t_philo *philos_data, pthread_mutex_t *forks, int philo_num)
+void	give_forks(t_philo *philos_data, pthread_mutex_t *forks, int philo_num)
 {
 	int	i;
 
@@ -200,7 +195,7 @@ void	destroy_mutexes(pthread_mutex_t *forks, int n)
 	}
 }
 
-void	join_threads(pthread_t *philos, pthread_t *death_checkers, int philo_num)
+void	join_all(pthread_t *philos, pthread_t *death_checkers, int philo_num)
 {
 	int	i;
 
@@ -221,7 +216,7 @@ void	join_threads(pthread_t *philos, pthread_t *death_checkers, int philo_num)
 bool	run_simulation(t_state *s, int philo_num)
 {
 	philo_routine	rt;
-	int	i;
+	int				i;
 
 	i = 0;
 	if (s->args->must_eat_num)
@@ -238,7 +233,8 @@ bool	run_simulation(t_state *s, int philo_num)
 	i = 0;
 	while (i < philo_num)
 	{
-		if (pthread_create(&s->death_checkers[i], NULL, &routine_death, &s->philos_data[i]) != 0)
+		if (pthread_create(&s->death_checkers[i], NULL, &routine_death, \
+			&s->philos_data[i]) != 0)
 			return (false);
 		i++;
 	}
@@ -319,27 +315,54 @@ void	init_and_run(t_args *args)
 		printf("Erorr while allocating memory\n");
 		free_state(&s);
 	}
-	distribute_forks(s.philos_data, s.forks, args->philo_num);
+	give_forks(s.philos_data, s.forks, args->philo_num);
 	if (!run_simulation(&s, args->philo_num))
 		printf("Error while creating threads\n");
-	join_threads(s.philos, s.death_checkers, args->philo_num);
+	join_all(s.philos, s.death_checkers, args->philo_num);
 	destroy_mutexes(s.forks, args->philo_num * 2);
 	pthread_mutex_destroy(&s.still_eating_m);
 	free_state(&s);
 }
 
-// TODO
-// 1) Parse program arguments
-// 2) Implement max number of meals
-int main(int argc, char *argv[])
+bool	parse_and_set_int(const char *s, int *n)
+{
+	int	err;
+
+	if (is_num(s))
+	{
+		*n = ft_atoi_safe(s, &err);
+		return (!err && *n > 0);
+	}
+	else
+		return (false);
+}
+
+// accept 4 or 5 arguments
+// must be integers greater than zero
+bool	parse_args(t_args *a, int argc, const char *argv[])
+{
+	a->must_eat_num = 0;
+	if (argc == 5 || argc == 6)
+	{
+		return (parse_and_set_int(argv[1], &a->philo_num) && \
+			parse_and_set_int(argv[2], &a->time_death) && \
+			parse_and_set_int(argv[3], &a->time_eat) && \
+			parse_and_set_int(argv[4], &a->time_sleep) && \
+			(argc != 6 || parse_and_set_int(argv[5], &a->must_eat_num)));
+	}
+	else
+		return (false);
+}
+
+int	main(int argc, const char *argv[])
 {
 	t_args	args;
 
-	args.philo_num = PHILO_NUM;
-	args.time_death = TIME_DEATH;
-	args.time_eat = TIME_EAT;
-	args.time_sleep = TIME_SLEEP;
-	args.must_eat_num = 1;
+	if (!parse_args(&args, argc, argv))
+	{
+		printf("Bad arguments\n");
+		return (0);
+	}
 	init_and_run(&args);
 	return (0);
 }
