@@ -16,8 +16,8 @@
 
 #include <philo.h>
 
-#define PHILO_NUM 4
-#define TIME_DEATH 410
+#define PHILO_NUM 5
+#define TIME_DEATH 800
 #define TIME_EAT 200
 #define TIME_SLEEP 200
 
@@ -119,8 +119,9 @@ void	*routine_min_eaten(void *philo_data)
 		p->times_eaten++;
 		if (p->times_eaten == p->args->must_eat_num)
 		{
-			(*p->philos_still_eating)--; // TODO seems like I need a mutex for this
-			printf("Philos still eating: %d\n", *p->philos_still_eating);
+			pthread_mutex_lock(p->still_eating_m);
+			(*p->philos_still_eating)--;
+			pthread_mutex_unlock(p->still_eating_m);
 		}
 		terminate_if_all_eaten(p);
 		release_forks(p);
@@ -253,15 +254,23 @@ bool	state_malloc(t_state *s, int philo_num)
 	return (s->philos && s->death_checkers && s->philos_data && s->forks);
 }
 
-void	init_philo_data(t_state *s, t_philo *p, int index)
+void	init_philo_data(t_state *s, t_args *args)
 {
-	p->all_forks = s->forks;
-	p->args = s->args;
-	p->index = index;
-	p->start = &s->start;
-	p->death = &s->death;
-	p->times_eaten = 0;
-	p->philos_still_eating = &s->philos_still_eating;
+	int	i;
+
+	i = 0;
+	while (i < args->philo_num)
+	{
+		s->philos_data[i].all_forks = s->forks;
+		s->philos_data[i].args = args;
+		s->philos_data[i].index = i;
+		s->philos_data[i].start = &s->start;
+		s->philos_data[i].death = &s->death;
+		s->philos_data[i].times_eaten = 0;
+		s->philos_data[i].philos_still_eating = &s->philos_still_eating;
+		s->philos_data[i].still_eating_m = &s->still_eating_m;
+		i++;
+	}
 }
 
 bool	init_vars(t_state *s, t_args *args)
@@ -283,12 +292,13 @@ bool	init_vars(t_state *s, t_args *args)
 		}
 		i++;
 	}
-	i = 0;
-	while (i < args->philo_num)
+	if (pthread_mutex_init(&s->still_eating_m, NULL) != 0)
 	{
-		init_philo_data(s, &s->philos_data[i], i);
-		i++;
+		destroy_mutexes(s->forks, args->philo_num * 2);
+		pthread_mutex_destroy(&s->still_eating_m);
+		return (false);
 	}
+	init_philo_data(s, args);
 	return (true);
 }
 
@@ -314,6 +324,7 @@ void	init_and_run(t_args *args)
 		printf("Error while creating threads\n");
 	join_threads(s.philos, s.death_checkers, args->philo_num);
 	destroy_mutexes(s.forks, args->philo_num * 2);
+	pthread_mutex_destroy(&s.still_eating_m);
 	free_state(&s);
 }
 

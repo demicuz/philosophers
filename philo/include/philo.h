@@ -41,7 +41,7 @@ typedef	struct s_philo
 	bool			*death;
 	int				*philos_still_eating;
 	t_args			*args;
-	// pthread_mutex_t *still_eating_m;
+	pthread_mutex_t *still_eating_m;
 
 }	t_philo;
 
@@ -54,8 +54,9 @@ typedef struct s_state
 	struct timeval	start;
 	bool			death;
 	t_args			*args;
+
 	int				philos_still_eating;
-	// pthread_mutex_t still_eating_m;
+	pthread_mutex_t still_eating_m;
 }	t_state;
 
 typedef void	*(*philo_routine)(void *philo_data);
