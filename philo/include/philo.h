@@ -29,22 +29,23 @@ typedef struct s_args
 	int	must_eat_num;
 }	t_args;
 
-typedef	struct s_philo
+typedef struct s_philo
 {
 	pthread_mutex_t	*fork1_for_me;
 	pthread_mutex_t	*fork2_for_me;
 	pthread_mutex_t	*fork1_for_neighbor;
 	pthread_mutex_t	*fork2_for_neighbor;
 	pthread_mutex_t	*all_forks;
+
 	struct timeval	*start;
 	long			last_eaten;
 	int				times_eaten;
 	int				index;
+	t_args			*args;
 
 	bool			*death;
 	int				*philos_still_eating;
-	t_args			*args;
-	pthread_mutex_t *still_eating_m;
+	pthread_mutex_t	*still_eating_m;
 
 }	t_philo;
 
@@ -59,10 +60,10 @@ typedef struct s_state
 	t_args			*args;
 
 	int				philos_still_eating;
-	pthread_mutex_t still_eating_m;
+	pthread_mutex_t	still_eating_m;
 }	t_state;
 
-typedef void	*(*philo_routine)(void *philo_data);
+typedef void	*(*t_philo_routine)(void *philo_data);
 
 // utils
 int		is_num(const char *s);
@@ -94,6 +95,5 @@ bool	run_simulation(t_state *s, int philo_num);
 void	join_all(pthread_t *philos, pthread_t *death_checkers, int philo_num);
 void	free_state(t_state *s);
 void	init_and_run(t_args *args);
-
 
 #endif

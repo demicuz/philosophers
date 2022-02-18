@@ -14,7 +14,7 @@
 
 bool	run_simulation(t_state *s, int philo_num)
 {
-	philo_routine	rt;
+	t_philo_routine	rt;
 	int				i;
 
 	i = 0;
