@@ -12,45 +12,33 @@
 
 #include <philo.h>
 
-bool	parse_and_set_int(const char *s, int *n)
+void	take_forks(t_philo *p)
 {
-	int	err;
-
-	if (is_num(s))
-	{
-		*n = ft_atoi_safe(s, &err);
-		return (!err && *n > 0);
-	}
-	else
-		return (false);
+	pthread_mutex_lock(p->fork1_for_me);
+	printf("%ld %d has taken a fork\n", time_passed(p->start), p->index);
+	pthread_mutex_lock(p->fork2_for_me);
+	printf("%ld %d has taken a fork\n", time_passed(p->start), p->index);
 }
 
-// accept 4 or 5 arguments
-// must be integers greater than zero
-bool	parse_args(t_args *a, int argc, const char *argv[])
+void	eat(t_philo *p)
 {
-	a->must_eat_num = 0;
-	if (argc == 5 || argc == 6)
-	{
-		return (parse_and_set_int(argv[1], &a->philo_num) && \
-			parse_and_set_int(argv[2], &a->time_death) && \
-			parse_and_set_int(argv[3], &a->time_eat) && \
-			parse_and_set_int(argv[4], &a->time_sleep) && \
-			(argc != 6 || parse_and_set_int(argv[5], &a->must_eat_num)));
-	}
-	else
-		return (false);
+	long	now_millis;
+
+	now_millis = time_passed(p->start);
+	printf("%ld %d is eating\n", now_millis, p->index);
+	p->last_eaten = now_millis;
+	usleep(p->args->time_eat * 1000);
 }
 
-int	main(int argc, const char *argv[])
+void	release_forks(t_philo *p)
 {
-	t_args	args;
+	pthread_mutex_unlock(p->fork1_for_neighbor);
+	pthread_mutex_unlock(p->fork2_for_neighbor);
+}
 
-	if (!parse_args(&args, argc, argv))
-	{
-		printf("Bad arguments\n");
-		return (0);
-	}
-	init_and_run(&args);
-	return (0);
+void	take_a_nap(t_philo *p)
+{
+	printf("%ld %d is sleeping\n", time_passed(p->start), p->index);
+	usleep(p->args->time_sleep * 1000);
+	printf("%ld %d is thinking\n", time_passed(p->start), p->index);
 }

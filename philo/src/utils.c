@@ -54,3 +54,12 @@ int	ft_atoi_safe(const char *str, int *err)
 	}
 	return (result);
 }
+
+long	time_passed(struct timeval *start)
+{
+	struct timeval	now;
+
+	gettimeofday(&now, NULL);
+	return ((now.tv_sec - start->tv_sec) * 1000 + \
+		((now.tv_usec - start->tv_usec) / 1000));
+}

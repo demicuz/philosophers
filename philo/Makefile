@@ -4,7 +4,11 @@ SRC_DIR		:= src
 OBJ_DIR		:= obj
 LIB_DIR		:= lib
 
-SRC_FILES	:= main.c \
+SRC_FILES	:= bootstrap.c \
+               main.c \
+               philo_actions.c \
+               routines.c \
+               run.c \
                utils.c
 
 SRC			:= $(addprefix $(SRC_DIR)/, $(SRC_FILES))
@@ -12,7 +16,7 @@ OBJ			:= $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 CC			:= cc
 CPPFLAGS	:= -I include -MMD -MP
-CFLAGS		:= -g -pthread -Wall -Werror -O1#-Wextra
+CFLAGS		:= -g -pthread -Wall -Werror -Wextra -O1
 LDFLAGS		:= -pthread
 LDLIBS		:=
 
