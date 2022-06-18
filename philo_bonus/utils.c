@@ -6,11 +6,16 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:55:26 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/16 22:58:15 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/18 22:17:24 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <limits.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <signal.h>
+// #include <stdlib.h>
+#include <stddef.h>
 
 int	is_num(const char *s)
 {
@@ -52,4 +57,26 @@ int	ft_atoi_safe(const char *str, int *err)
 		str++;
 	}
 	return (result);
+}
+
+// Time passed since `start` in milliseconds
+long	time_passed(struct timeval *start)
+{
+	struct timeval	now;
+
+	gettimeofday(&now, NULL);
+	return ((now.tv_sec - start->tv_sec) * 1000 + \
+		((now.tv_usec - start->tv_usec) / 1000));
+}
+
+void	kill_all(pid_t *pids, int n)
+{
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		kill(pids[i], SIGTERM);
+		i++;
+	}
 }

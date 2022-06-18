@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:04:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/18 13:59:36 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/18 22:22:06 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@
 
 #include <signal.h>
 
-void	philo_action()
+#include <sys/time.h>
+
+void	philo_action(struct timeval *start)
 {
 	int *a = malloc(sizeof(int) * 10);
 	*a = 0;
@@ -35,17 +37,45 @@ void	philo_action()
 	}
 }
 
+int	run_simulation(pid_t *pids, t_args *args)
+{
+	struct timeval	start;
+	int				i;
+
+	gettimeofday(&start, NULL);
+
+	i = 0;
+	while (i < args->philo_num)
+	{
+		pids[i] = fork();
+		if (pids[i] == 0)
+			philo_action(&start);
+		else if (pids[i] == -1)
+		{
+			kill_all(pids, i);
+			free(pids);
+			return (EXIT_FAILURE);
+		}
+		i++;
+	}
+	return (EXIT_SUCCESS);
+}
+
 int	init_and_run(t_args *args)
 {
-	// int	*philo_pids = malloc(sizeof(int) * args->philo_num);
-	// int i = 0;
-	pid_t pid = fork();
-	if (pid == 0)
-		philo_action();
-	sleep(3);
-	kill(pid, SIGTERM);
-	puts("I'm not dead");
-	// wait(NULL);
+	pid_t			*pids;
+
+	if (args->must_eat_num == 0 || args->philo_num == 0)
+		return (EXIT_SUCCESS);
+
+	pids = malloc(sizeof(pid_t) * args->philo_num);
+	if (!pids)
+		return (EXIT_FAILURE);
+
+	run_simulation(pids, args);
+
+	//waitpid()
+	puts("All children should have exited!");
 	return (0);
 }
 
@@ -68,7 +98,7 @@ bool	parse_and_set_int(const char *s, int *n)
 // the code is ugly af
 bool	parse_args(t_args *a, int argc, const char *argv[])
 {
-	a->must_eat_num = 0;
+	a->must_eat_num = -1;
 	if (argc == 5)
 	{
 		return (parse_and_set_int(argv[1], &a->philo_num) && \
@@ -97,5 +127,5 @@ int	main(int argc, const char *argv[])
 		printf(HELP_MESSAGE);
 		return (EXIT_FAILURE);
 	}
-	return (init_and_run(&args));
+	exit(init_and_run(&args));
 }
