@@ -13,7 +13,7 @@ OBJ			:= $(SRC:%.c=$(OBJ_DIR)/%.o)
 # TODO correct flags
 CC			:= cc
 CPPFLAGS	:= -I . -MMD -MP
-CFLAGS		:= -pthread -g#-O1 -Wall -Werror -Wextra
+CFLAGS		:= -g#-O1 -Wall -Werror -Wextra
 LDFLAGS		:= -pthread
 LDLIBS		:=
 
