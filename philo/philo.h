@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/18 14:26:22 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/20 00:04:14 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	*routine_death(void *philo_data);
 // run
 bool	run_simulation(t_state *s, int philo_num);
 void	join_all(pthread_t *philos, pthread_t *death_checkers, int philo_num);
-void	free_state(t_state *s);
+void	cleanup(t_state *s);
 int		init_and_run(t_args *args);
 
 #endif

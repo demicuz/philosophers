@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:36 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/18 14:27:15 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/20 01:20:56 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	join_all(pthread_t *philos, pthread_t *death_checkers, int philo_num)
 	}
 }
 
-void	free_state(t_state *s)
+void	cleanup(t_state *s)
 {
 	free(s->philos);
 	free(s->death_checkers);
@@ -77,7 +77,7 @@ int	init_and_run(t_args *args)
 	if (!init_vars(&s, args))
 	{
 		printf("Error while allocating memory or initializing mutexes\n");
-		free_state(&s);
+		cleanup(&s);
 		return (EXIT_FAILURE);
 	}
 	give_forks(s.philos_data, s.forks, args->philo_num);
@@ -92,6 +92,6 @@ int	init_and_run(t_args *args)
 	destroy_mutexes(s.last_eaten, args->philo_num);
 	pthread_mutex_destroy(&s.still_eating_m);
 	pthread_mutex_destroy(&s.death_m);
-	free_state(&s);
+	cleanup(&s);
 	return (exit_code);
 }
