@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/18 22:17:31 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/20 01:22:40 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include <sys/time.h>
 #include <sys/types.h>
+#include <semaphore.h>
+#include <stdbool.h>
 
 # define HELP_MESSAGE "\
 Bad arguments\n\
@@ -31,10 +33,40 @@ typedef struct s_args
 	int	must_eat_num;
 }	t_args;
 
+typedef struct s_state
+{
+	pid_t	*pids;
+	// struct timeval	start;
+	// mutexes
+	sem_t	*forks;
+	sem_t	*stdout;
+
+	sem_t	**last_eaten_sems;
+	char	**last_eaten_sem_names;
+}	t_state;
+
+typedef struct s_philo
+{
+	int		index;
+	int		times_eaten;
+
+	long	last_eaten;
+	sem_t	*last_eaten_sem;
+}	t_philo;
+
+// bootstrap
+bool	init(t_args *a, t_state *s);
+
 // utils
-int	is_num(const char *s);
-int	ft_atoi_safe(const char *str, int *err);
+int		is_num(const char *s);
+int		ft_atoi_safe(const char *str, int *err);
 long	time_passed(struct timeval *start);
 void	kill_all(pid_t *pids, int n);
+int		ft_count_digits(int n);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+char	*get_philo_sem_name(int index);
+
+// void	free_names(char **last_eaten_sem_names, int n);
+void	cleanup(t_args *a, t_state *s);
 
 #endif

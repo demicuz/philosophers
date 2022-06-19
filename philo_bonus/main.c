@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:04:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/18 22:22:06 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/20 01:49:01 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,23 @@
 // TODO remove unused headers
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 #include <unistd.h>
 #include <sys/wait.h>
 
-#include <semaphore.h>
-
-#include <signal.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 #include <sys/time.h>
 
-void	philo_action(struct timeval *start)
+void	philo_action(struct timeval *start, int index)
 {
 	int *a = malloc(sizeof(int) * 10);
 	*a = 0;
 	while (true)
 	{
-		puts("ima philo");
-		sleep(1);
+		printf("I'm a philo number %d\n", index + 1);
+		sleep(3);
 	}
 }
 
@@ -49,11 +47,11 @@ int	run_simulation(pid_t *pids, t_args *args)
 	{
 		pids[i] = fork();
 		if (pids[i] == 0)
-			philo_action(&start);
+			philo_action(&start, i);
 		else if (pids[i] == -1)
 		{
 			kill_all(pids, i);
-			free(pids);
+			// free(pids);
 			return (EXIT_FAILURE);
 		}
 		i++;
@@ -61,21 +59,28 @@ int	run_simulation(pid_t *pids, t_args *args)
 	return (EXIT_SUCCESS);
 }
 
+
+
 int	init_and_run(t_args *args)
 {
-	pid_t			*pids;
 
-	if (args->must_eat_num == 0 || args->philo_num == 0)
-		return (EXIT_SUCCESS);
+	// if (args->must_eat_num == 0 || args->philo_num == 0)
+	// 	return (EXIT_SUCCESS);
 
-	pids = malloc(sizeof(pid_t) * args->philo_num);
-	if (!pids)
-		return (EXIT_FAILURE);
+	// if (!run_simulation(pids, args))
+	// {
+	// 	// do something here, processes should be killed
+	// }
+	// else
+	// {
+	// 	// wait for processes to exit
+	// }
 
-	run_simulation(pids, args);
-
-	//waitpid()
-	puts("All children should have exited!");
+	// //waitpid()
+	// sleep(10);
+	// kill_all(pids, args->philo_num);
+	// free(pids);
+	// puts("All children should have exited!");
 	return (0);
 }
 
@@ -121,11 +126,27 @@ bool	parse_args(t_args *a, int argc, const char *argv[])
 int	main(int argc, const char *argv[])
 {
 	t_args	args;
+	t_state	state;
 
 	if (!parse_args(&args, argc, argv))
 	{
 		printf(HELP_MESSAGE);
 		return (EXIT_FAILURE);
 	}
-	exit(init_and_run(&args));
+	if (args.must_eat_num == 0 || args.philo_num == 0)
+		return (EXIT_SUCCESS);
+	if (!init(&args, &state))
+	{
+		printf("Failed to initialize\n");
+		return (EXIT_FAILURE);
+	}
+	puts("finished");
+	cleanup(&args, &state);
+	// if (!run(&args, &state))
+	// {
+	// 	printf("Failed to run the simulation\n");
+	// 	return (EXIT_FAILURE);
+	// }
+	// TODO NOW split init_and_run into two functions, call them here
+	// exit(init_and_run(&args));
 }
