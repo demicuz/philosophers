@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/20 04:17:27 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/22 21:44:09 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,21 @@ typedef struct s_state
 typedef struct s_philo
 {
 	// TODO remove unused variables
-	int				index;
-	int				times_eaten;
+	t_args	*args;
+	struct timeval	*start;
 
-	sem_t			*last_eaten_sem;
-	long			last_eaten;
-	bool			death;
+	// TODO
+	// sem_t	*forks;
+
+	int		index;
+	int		times_eaten;
+
+	sem_t	*last_eaten_sem;
+	long	last_eaten;
+	bool	died;
+
+	// TODO duplicating t_state
+	sem_t	*stdout;
 }	t_philo;
 
 // philo exit statuses

@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:55:26 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/22 03:18:05 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/22 20:11:39 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@ void	cleanup(t_args *a, t_state *s)
 	free(s->last_eaten_sem_names);
 	free(s->last_eaten_sems);
 	// TODO made this just in case, I should assure I don't call cleanup()
-	// twice and remove this
+	// twice and remove these lines
 	s->pids = NULL;
 	s->last_eaten_sem_names = NULL;
 	s->last_eaten_sems = NULL;

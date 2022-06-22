@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 03:50:39 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/22 03:20:37 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/22 21:29:34 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@
 void	lock_and_check_death(t_philo *p, t_state *s)
 {
 	sem_wait(s->stdout);
-	if (p->death)
+	if (p->died)
 	{
+		printf("%d DIED in lock_and_check_death()\n", p->index); // TODO remove this
 		// TODO is this needed? Maybe block other philos from pooping into
 		// stdout?
 		sem_post(s->stdout);
-		puts("DIED");
-		exit(123);
+		exit(p->index);
 	}
 }
 
@@ -37,6 +37,8 @@ void	take_forks(t_philo *p, t_state *s)
 	printf("%ld %d is thinking\n", time_passed(s->start), p->index + 1);
 	sem_post(s->stdout);
 
+	// TODO room for optimization - take two forks at once, then check death
+	// and print two messages
 	sem_wait(s->forks);
 	lock_and_check_death(p, s);
 	printf("%ld %d has taken a fork\n", time_passed(s->start), p->index + 1);
