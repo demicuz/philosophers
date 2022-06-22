@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 18:52:45 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/20 01:53:53 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/20 04:20:20 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ bool	open_philo_semaphores(t_args *a, t_state *s)
 	i = 0;
 	while (i < a->philo_num)
 	{
-		if (sem_open(s->last_eaten_sem_names[i], O_CREAT | O_EXCL, S_IRWXU, 1)
-			== SEM_FAILED)
+		sem_unlink(s->last_eaten_sem_names[i]);
+		s->last_eaten_sems[i] = sem_open(s->last_eaten_sem_names[i],
+			O_CREAT | O_EXCL, S_IRWXU, 1);
+		if (s->last_eaten_sems[i] == SEM_FAILED)
 			return (false);
 		i++;
 	}

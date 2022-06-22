@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/20 01:22:40 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/20 04:17:27 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_state
 	pid_t	*pids;
 	// struct timeval	start;
 	// mutexes
+	struct timeval	*start;
 	sem_t	*forks;
 	sem_t	*stdout;
 
@@ -47,12 +48,18 @@ typedef struct s_state
 
 typedef struct s_philo
 {
-	int		index;
-	int		times_eaten;
+	// TODO remove unused variables
+	int				index;
+	int				times_eaten;
 
-	long	last_eaten;
-	sem_t	*last_eaten_sem;
+	sem_t			*last_eaten_sem;
+	long			last_eaten;
+	bool			death;
 }	t_philo;
+
+// philo exit statuses
+#define PHILO_DIED 1
+#define PHILO_EATEN_ENOUGH 2
 
 // bootstrap
 bool	init(t_args *a, t_state *s);
@@ -68,5 +75,11 @@ char	*get_philo_sem_name(int index);
 
 // void	free_names(char **last_eaten_sem_names, int n);
 void	cleanup(t_args *a, t_state *s);
+
+// philo_actions
+void	lock_and_check_death(t_philo *p, t_state *s);
+void	take_forks(t_philo *p, t_state *s);
+void	eat(t_philo *p, t_args *a, t_state *s);
+void	take_a_nap(t_philo *p, t_args *a, t_state *s);
 
 #endif
