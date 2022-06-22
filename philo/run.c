@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:36 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/20 01:20:56 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/20 03:51:18 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,6 @@ int	init_and_run(t_args *args)
 	t_state	s;
 	int		exit_code;
 
-	if (args->must_eat_num == 0 || args->philo_num == 0)
-		return (EXIT_SUCCESS);
 	if (!init_vars(&s, args))
 	{
 		printf("Error while allocating memory or initializing mutexes\n");

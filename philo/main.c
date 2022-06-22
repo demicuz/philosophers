@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:01:52 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/18 14:26:29 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/22 20:06:18 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,13 @@ int	main(int argc, const char *argv[])
 	if (!parse_args(&args, argc, argv))
 	{
 		printf(HELP_MESSAGE);
+		return (EXIT_FAILURE);
+	}
+	if (args.must_eat_num == 0 || args.philo_num == 0)
+		return (EXIT_SUCCESS);
+	if (args.philo_num > 255)
+	{
+		printf("Just... Don't.\n");
 		return (EXIT_FAILURE);
 	}
 	return (init_and_run(&args));
