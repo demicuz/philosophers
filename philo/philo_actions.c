@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:29 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/15 19:05:59 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/23 09:01:07 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,14 @@ void	take_forks(t_philo *p)
 
 void	eat(t_philo *p)
 {
-	long	now_millis;
+	unsigned long	now_micros;
 
 	lock_and_check_death(p);
-	now_millis = time_passed(p->start);
-	printf("%ld %d is eating\n", now_millis, p->index + 1);
+	now_micros = time_passed_micros(p->start);
+	printf("%ld %d is eating\n", now_micros / 1000, p->index + 1);
 	pthread_mutex_unlock(p->death_m);
 	pthread_mutex_lock(p->last_eaten_m);
-	p->last_eaten = now_millis;
+	p->last_eaten = now_micros;
 	pthread_mutex_unlock(p->last_eaten_m);
 	usleep(p->args->time_eat * 1000);
 	pthread_mutex_unlock(p->fork1_for_neighbor);

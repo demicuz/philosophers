@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 21:27:43 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/13 18:00:39 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/23 09:04:30 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ bool	init_eat_death_mutexes(t_state *s, t_args *args)
 
 bool	init_mutexes(t_state *s, t_args *args)
 {
-	int	i;
+	unsigned int	i;
 
 	i = 0;
 	while (i < args->philo_num * 2)

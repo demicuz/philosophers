@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:04 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/17 16:44:21 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/23 09:04:16 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool	state_malloc(t_state *s, int philo_num)
 
 void	init_philo_data(t_state *s, t_args *args)
 {
-	int	i;
+	unsigned int	i;
 
 	i = 0;
 	while (i < args->philo_num)

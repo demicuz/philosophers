@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/20 00:04:14 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/23 08:59:35 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,16 @@ Usage: ./philo philo_num t_death t_eat t_sleep [must_eat_num]\n\
 Examples: ./philo 5 800 200 200\n\
           ./philo 5 800 200 200 1\n"
 
+// TODO maybe other than 100?
+#define MIN_WAIT_TIME 100
+
 typedef struct s_args
 {
-	int	philo_num;
-	int	time_death;
-	int	time_eat;
-	int	time_sleep;
-	int	must_eat_num;
+	unsigned int	philo_num;
+	unsigned int	time_death;
+	unsigned int	time_eat;
+	unsigned int	time_sleep;
+	int				must_eat_num;
 }	t_args;
 
 typedef struct s_philo
@@ -58,6 +61,8 @@ typedef struct s_philo
 	pthread_mutex_t	*still_eating_m;
 }	t_philo;
 
+// TODO start, args, etc. are duplicated in t_philo. This is needed for
+// routines, but maybe it's possible to clean this up?
 typedef struct s_state
 {
 	t_args			*args;
@@ -82,6 +87,7 @@ typedef void	*(*t_philo_routine)(void *philo_data);
 int		is_num(const char *s);
 int		ft_atoi_safe(const char *str, int *err);
 long	time_passed(struct timeval *start);
+long	time_passed_micros(struct timeval *start);
 void	unlock_all_mutexes(pthread_mutex_t *mutexes, int n);
 
 // bootstrap
