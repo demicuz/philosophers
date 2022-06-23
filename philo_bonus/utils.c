@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:55:26 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/22 20:11:39 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 02:36:56 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <stdlib.h>
+
+#include <stdio.h> // TODO remove this
 
 int	is_num(const char *s)
 {
@@ -61,13 +63,26 @@ int	ft_atoi_safe(const char *str, int *err)
 }
 
 // Time passed since `start` in milliseconds
-long	time_passed(struct timeval *start)
+// unsigned long	time_passed(struct timeval *start)
+// {
+// 	struct timeval	now;
+
+// 	gettimeofday(&now, NULL);
+// 	printf("Time: %ld\n", (now.tv_sec - start->tv_sec) * 1000000 + ((now.tv_usec - start->tv_usec)));
+// 	printf("Sec: %ld, usec: %ld\n", (now.tv_sec - start->tv_sec), ((now.tv_usec - start->tv_usec)));
+// 	printf("Returned: %ld\n", (now.tv_sec - start->tv_sec) * 1000 + ((now.tv_usec - start->tv_usec) / 1000));
+// 	return ((now.tv_sec - start->tv_sec) * 1000 +
+// 		((now.tv_usec - start->tv_usec) / 1000));
+// }
+
+// Time passed since `start` in microseconds
+unsigned long	time_passed(struct timeval *start)
 {
 	struct timeval	now;
 
 	gettimeofday(&now, NULL);
-	return ((now.tv_sec - start->tv_sec) * 1000 + \
-		((now.tv_usec - start->tv_usec) / 1000));
+	return ((now.tv_sec - start->tv_sec) * 1000000 +
+		(now.tv_usec - start->tv_usec));
 }
 
 void	kill_all(pid_t *pids, int n)
@@ -77,7 +92,8 @@ void	kill_all(pid_t *pids, int n)
 	i = 0;
 	while (i < n)
 	{
-		kill(pids[i], SIGTERM);
+		if (pids[i] != 0)
+			kill(pids[i], SIGTERM);
 		i++;
 	}
 }

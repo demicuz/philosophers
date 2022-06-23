@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 18:52:45 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/20 04:20:20 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/23 03:10:25 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ bool	init_philo_semaphores(t_args *a, t_state *s)
 		free(s->last_eaten_sems);
 		return (false);
 	}
-	memset(s->last_eaten_sem_names, 0, a->philo_num);
-	memset(s->last_eaten_sems, 0, a->philo_num);
+	memset(s->last_eaten_sem_names, 0, a->philo_num * sizeof(char *));
+	memset(s->last_eaten_sems, 0, a->philo_num * sizeof(sem_t *));
 	i = 0;
 	while (i < a->philo_num)
 	{
@@ -72,5 +72,6 @@ bool	init(t_args *a, t_state *s)
 		cleanup(a, s);
 		return (false);
 	}
+	memset(s->pids, 0, a->philo_num * sizeof(pid_t));
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:04:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/22 21:57:54 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/23 19:46:59 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,48 +26,32 @@
 
 #include <pthread.h>
 
-void	die(t_philo *p, long now_millis)
-{
-	// pthread_mutex_lock(p->death_m);
-	sem_wait(p->stdout);
-	// if (!p->died)
-		// printf("%ld %d died\n", now_millis, p->index + 1);
-	p->died = true;
-	// pthread_mutex_unlock(p->death_m);
-	sem_post(p->stdout);
-	sem_post(p->last_eaten_sem);
-	printf("%d DIED in die()\n", p->index); // TODO
-	// pthread_exit(NULL);
-	// exit(p->index); // TODO does this kill the philo thread?
-	exit(255);
-}
 
-// TODO reduce 500ms for additional waiting. Philos live with 4 400 200 200,
-// though they shouldn't.
 void	*routine_death(void *philo_data)
 {
 	t_philo			*p;
-	long			now_millis;
-	long			dt;
+	unsigned long	now_micros;
+	unsigned long	dt;
 
 	p = philo_data;
-	// usleep(p->args->time_death * 1000 + 500);
-	usleep(p->args->time_death * 1000);
+	usleep(p->args->time_death * 1000 - time_passed(p->start) + MIN_WAIT_TIME);
 	while (true)
 	{
-		// pthread_mutex_lock(p->last_eaten_m);
 		sem_wait(p->last_eaten_sem);
-		now_millis = time_passed(p->start);
-		dt = now_millis - p->last_eaten;
-		if (dt <= p->args->time_death)
+		now_micros = time_passed(p->start);
+		dt = now_micros - p->last_eaten;
+		if (dt <= p->args->time_death * 1000)
 		{
-			// pthread_mutex_unlock(p->last_eaten_m);
 			sem_post(p->last_eaten_sem);
-			// usleep((p->args->time_death - dt) * 1000 + 500);
-			usleep((p->args->time_death - dt) * 1000 + 50);
+			// puts("death check");
+			usleep(p->args->time_death * 1000 - dt + MIN_WAIT_TIME);
 		}
 		else
-			die(p, now_millis);
+		{
+			sem_wait(p->stdout);
+			// sem_post(p->last_eaten_sem); // TODO do I really need this?
+			exit(p->index);
+		}
 	}
 }
 
@@ -79,18 +63,17 @@ void	philo_routine(t_args *a, t_state *s, struct timeval *start, int index)
 	p.index = index; // TODO is this necessary?
 	p.last_eaten_sem = s->last_eaten_sems[index];
 	p.last_eaten = 0; // 0 is the beginning of the simulation
-	p.died = false;
 	p.args = a;
 	p.start = start;
 	p.stdout = s->stdout;
-	// create a death checker
 	if (pthread_create(&deatch_checker, NULL, routine_death, &p) != 0)
 	{
-		puts("THREAD CREATION FAILED");
-		exit(255);
-		// return (false);
+		sem_wait(s->stdout);
+		exit(THREAD_CREATION_FAILED);
 	}
 	pthread_detach(deatch_checker);
+	// if (a->philo_num % 2 == 0 && index >= a->philo_num / 2)
+		// usleep(PHILO_WAIT_TIME);
 	while (true)
 	{
 		take_forks(&p, s);
@@ -104,11 +87,11 @@ bool	wait_simulation_end(t_args *a, t_state *s)
 	int	wstatus;
 
 	waitpid(-1, &wstatus, 0);
-	sem_wait(s->stdout); // TODO hangs sometimes
-	// printf("child exited with status %d\n", WEXITSTATUS(wstatus));
-	printf("%ld %d died\n", time_passed(s->start), WEXITSTATUS(wstatus) + 1);
+	if (WEXITSTATUS(wstatus) != THREAD_CREATION_FAILED)
+		printf("%ld %d died\n", time_passed(s->start) / 1000, WEXITSTATUS(wstatus) + 1);
+	else
+		printf("Thread creaton failed!\n");
 	kill_all(s->pids, a->philo_num);
-	sem_post(s->stdout);
 	return (true);
 }
 
@@ -189,7 +172,7 @@ int	main(int argc, const char *argv[])
 	}
 	if (args.must_eat_num == 0 || args.philo_num == 0)
 		return (EXIT_SUCCESS);
-	if (args.philo_num > 255)
+	if (args.philo_num > 254)
 	{
 		printf("Just... Don't.\n");
 		return (EXIT_FAILURE);
