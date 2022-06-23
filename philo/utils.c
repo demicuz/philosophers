@@ -66,7 +66,7 @@ long	time_passed(struct timeval *start)
 }
 
 // Time passed since `start` in microseconds
-long	time_passed_micros(struct timeval *start)
+unsigned long	time_passed_micros(struct timeval *start)
 {
 	struct timeval	now;
 
