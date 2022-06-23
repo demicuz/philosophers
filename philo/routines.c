@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 08:58:01 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/23 09:28:16 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	*routine_death(void *philo_data)
 	unsigned long	dt;
 
 	p = philo_data;
-	usleep(p->args->time_death * 1000 + MIN_WAIT_TIME);
+	usleep(p->args->time_death * 1000 - time_passed_micros(p->start) + MIN_WAIT_TIME);
 	while (true)
 	{
 		pthread_mutex_lock(p->last_eaten_m);
