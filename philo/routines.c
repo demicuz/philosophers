@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 06:13:51 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 07:37:10 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	*routine_death(void *philo_data)
 	unsigned long	dt;
 
 	p = philo_data;
-	usleep(p->args->time_death * 1000 - time_passed(p->start) + MIN_WAIT_TIME);
+	usleep(p->args->time_death * 1000 - time_passed(p->start) + CHECKER_WAIT_TIME);
 	while (true)
 	{
 		pthread_mutex_lock(p->last_eaten_m);
@@ -89,7 +89,7 @@ void	*routine_death(void *philo_data)
 		if (dt <= p->args->time_death * 1000)
 		{
 			pthread_mutex_unlock(p->last_eaten_m);
-			usleep(p->args->time_death * 1000 - dt + MIN_WAIT_TIME);
+			usleep(p->args->time_death * 1000 - dt + CHECKER_WAIT_TIME);
 		}
 		else
 			die(p, now_micros / 1000);

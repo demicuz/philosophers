@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 06:15:21 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 07:37:16 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Examples: ./philo 5 800 200 200\n\
           ./philo 5 800 200 200 1\n"
 
 // TODO maybe other than 100?
-#define MIN_WAIT_TIME 100
+#define CHECKER_WAIT_TIME 100
 
 typedef struct s_args
 {
