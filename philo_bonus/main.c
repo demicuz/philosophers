@@ -68,16 +68,16 @@ void	set_philo_vars(t_philo *p, t_args *a, t_state *s, unsigned int index)
 
 void	init_philo(t_philo *p, t_args *a, t_state *s, unsigned int index)
 {
-	pthread_t	deatch_checker;
+	pthread_t	death_checker;
 
 	set_philo_vars(p, a, s, index);
-	if (pthread_create(&deatch_checker, NULL, routine_death, p) != 0)
+	if (pthread_create(&death_checker, NULL, routine_death, p) != 0)
 	{
 		sem_wait(s->stdout);
 		printf("Thread creation failed!");
 		exit(255);
 	}
-	pthread_detach(deatch_checker);
+	pthread_detach(death_checker);
 }
 
 void	magic_start_delay(t_args *a, unsigned int index)
