@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:40 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 06:14:14 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 01:51:14 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ unsigned long	time_passed(struct timeval *start)
 	struct timeval	now;
 
 	gettimeofday(&now, NULL);
-	return ((now.tv_sec - start->tv_sec) * 1000000 +
-		((now.tv_usec - start->tv_usec)));
+	return ((now.tv_sec - start->tv_sec) * 1000000
+		+ ((now.tv_usec - start->tv_usec)));
 }
 
 // TODO Unlocking an unlocked mutex is UB. But it shouldn't crash the program.

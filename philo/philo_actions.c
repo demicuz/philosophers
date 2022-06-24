@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:29 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 06:11:08 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 01:56:42 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,13 @@ void	take_forks(t_philo *p)
 	pthread_mutex_unlock(p->death_m);
 	pthread_mutex_lock(p->fork1_for_me);
 	lock_and_check_death(p);
-	printf("%ld %d has taken a fork\n", time_passed(p->start) / 1000, p->index + 1);
+	printf("%ld %d has taken a fork\n", time_passed(p->start) / 1000,
+		p->index + 1);
 	pthread_mutex_unlock(p->death_m);
 	pthread_mutex_lock(p->fork2_for_me);
 	lock_and_check_death(p);
-	printf("%ld %d has taken a fork\n", time_passed(p->start) / 1000, p->index + 1);
+	printf("%ld %d has taken a fork\n", time_passed(p->start) / 1000,
+		p->index + 1);
 	pthread_mutex_unlock(p->death_m);
 }
 
