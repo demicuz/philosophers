@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:04:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 19:46:59 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 10:57:45 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void	*routine_death(void *philo_data)
 	unsigned long	dt;
 
 	p = philo_data;
-	usleep(p->args->time_death * 1000 - time_passed(p->start) + MIN_WAIT_TIME);
+	usleep(p->args->time_death * 1000 - time_passed(p->start)
+		+ CHECKER_WAIT_TIME);
 	while (true)
 	{
 		sem_wait(p->last_eaten_sem);
@@ -44,7 +45,7 @@ void	*routine_death(void *philo_data)
 		{
 			sem_post(p->last_eaten_sem);
 			// puts("death check");
-			usleep(p->args->time_death * 1000 - dt + MIN_WAIT_TIME);
+			usleep(p->args->time_death * 1000 - dt + CHECKER_WAIT_TIME);
 		}
 		else
 		{
@@ -55,30 +56,77 @@ void	*routine_death(void *philo_data)
 	}
 }
 
-void	philo_routine(t_args *a, t_state *s, struct timeval *start, int index)
+void	set_philo_vars(t_philo *p, t_args *a, t_state *s, int index)
 {
-	t_philo		p;
+	p->index = index;
+	p->last_eaten_sem = s->last_eaten_sems[index];
+	p->last_eaten = 0;
+	p->args = a;
+	p->start = s->start;
+	p->stdout = s->stdout;
+}
+
+void	init_philo(t_philo *p, t_args *a, t_state *s, int index)
+{
 	pthread_t	deatch_checker;
 
-	p.index = index; // TODO is this necessary?
-	p.last_eaten_sem = s->last_eaten_sems[index];
-	p.last_eaten = 0; // 0 is the beginning of the simulation
-	p.args = a;
-	p.start = start;
-	p.stdout = s->stdout;
-	if (pthread_create(&deatch_checker, NULL, routine_death, &p) != 0)
+	set_philo_vars(p, a, s, index);
+	if (pthread_create(&deatch_checker, NULL, routine_death, p) != 0)
 	{
 		sem_wait(s->stdout);
-		exit(THREAD_CREATION_FAILED);
+		printf("Thread creation failed!");
+		exit(255);
 	}
 	pthread_detach(deatch_checker);
-	// if (a->philo_num % 2 == 0 && index >= a->philo_num / 2)
-		// usleep(PHILO_WAIT_TIME);
+}
+
+void	magic_start_delay(t_args *a, int index)
+{
+	if (a->philo_num % 2 == 0 && index >= a->philo_num / 2)
+		usleep(PHILO_WAIT_TIME);
+	else if (a->philo_num % 2 != 0 && index == a->philo_num - 1)
+		usleep(a->time_eat * 1000 + PHILO_WAIT_TIME * 2);
+	else if (a->philo_num % 2 != 0 && index >= a->philo_num / 2)
+		usleep(PHILO_WAIT_TIME);
+}
+
+unsigned int	get_magic_wait_time(t_args *a)
+{
+	int	wat;
+
+	wat = 2 * a->time_eat - a->time_sleep;
+	if (a->philo_num % 2 != 0 && wat >= 0)
+		return(wat * 1000 + PHILO_WAIT_TIME);
+	else
+		return (0);
+}
+
+void	philo_routine(t_args *a, t_state *s, int index)
+{
+	t_philo			p;
+	int				must_eat_num;
+	unsigned int	magic_wait;
+
+	magic_wait = get_magic_wait_time(a);
+	must_eat_num = a->must_eat_num;
+	init_philo(&p, a, s, index);
+	think(&p, s);
+	magic_start_delay(a, index);
 	while (true)
 	{
 		take_forks(&p, s);
 		eat(&p, a, s);
+		if (must_eat_num >= 0)
+		{
+			must_eat_num--;
+			if (must_eat_num == 0 && ((a->philo_num % 2 == 0 && index >= a->philo_num / 2)
+				|| (a->philo_num % 2 != 0 && index == a->philo_num - 1)))
+				exit(255);
+		}
 		take_a_nap(&p, a, s);
+		if (a->philo_num % 2 != 0)
+			usleep(magic_wait);
+		think(&p, s);
 	}
 }
 
@@ -87,10 +135,8 @@ bool	wait_simulation_end(t_args *a, t_state *s)
 	int	wstatus;
 
 	waitpid(-1, &wstatus, 0);
-	if (WEXITSTATUS(wstatus) != THREAD_CREATION_FAILED)
+	if (WEXITSTATUS(wstatus) != 255)
 		printf("%ld %d died\n", time_passed(s->start) / 1000, WEXITSTATUS(wstatus) + 1);
-	else
-		printf("Thread creaton failed!\n");
 	kill_all(s->pids, a->philo_num);
 	return (true);
 }
@@ -107,7 +153,7 @@ bool	run_simulation(t_args *a, t_state *s)
 	{
 		s->pids[i] = fork();
 		if (s->pids[i] == 0)
-			philo_routine(a, s, &start, i);
+			philo_routine(a, s, i);
 		else if (s->pids[i] == -1)
 		{
 			kill_all(s->pids, i);
@@ -115,9 +161,7 @@ bool	run_simulation(t_args *a, t_state *s)
 		}
 		i++;
 	}
-	// TODO wait for philos here
 	wait_simulation_end(a, s);
-	puts("EXITING");
 	return (true);
 }
 
@@ -162,6 +206,7 @@ bool	parse_args(t_args *a, int argc, const char *argv[])
 
 int	main(int argc, const char *argv[])
 {
+	// close(1);
 	t_args	args;
 	t_state	state;
 

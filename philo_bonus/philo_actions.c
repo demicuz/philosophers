@@ -28,13 +28,17 @@
 // 	}
 // }
 
+void	think(t_philo *p, t_state *s)
+{
+	sem_wait(s->stdout);
+	printf("%ld %d is thinking\n", time_passed(s->start) / 1000, p->index + 1);
+	sem_post(s->stdout);
+}
+
 // Unreadable thanks to Norminette
 void	take_forks(t_philo *p, t_state *s)
 {
 	// lock_and_check_death(p, s);
-	sem_wait(s->stdout);
-	printf("%ld %d is thinking\n", time_passed(s->start) / 1000, p->index + 1);
-	sem_post(s->stdout);
 
 	// TODO room for optimization - take two forks at once, then check death
 	// and print two messages

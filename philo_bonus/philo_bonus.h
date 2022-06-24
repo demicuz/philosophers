@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 02:34:01 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 07:40:42 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,8 @@ Examples: ./philo_bonus 5 800 200 200\n\
           ./philo_bonus 5 800 200 200 1\n"
 
 // TODO maybe other than 100? And rename this
-#define MIN_WAIT_TIME 100
-#define PHILO_WAIT_TIME 100
-
-#define THREAD_CREATION_FAILED 255
+#define CHECKER_WAIT_TIME 100
+#define PHILO_WAIT_TIME 500
 
 typedef struct s_args
 {
@@ -88,7 +86,8 @@ char	*get_philo_sem_name(int index);
 void	cleanup(t_args *a, t_state *s);
 
 // philo_actions
-void	lock_and_check_death(t_philo *p, t_state *s);
+// void	lock_and_check_death(t_philo *p, t_state *s);
+void	think(t_philo *p, t_state *s);
 void	take_forks(t_philo *p, t_state *s);
 void	eat(t_philo *p, t_args *a, t_state *s);
 void	take_a_nap(t_philo *p, t_args *a, t_state *s);
