@@ -71,7 +71,7 @@ void	init_philo(t_philo *p, t_args *a, t_state *s, unsigned int index)
 	pthread_t	deatch_checker;
 
 	set_philo_vars(p, a, s, index);
-	if (pthread_create(&deatch_checker, NULL, routine_death, p) != 0)
+	if (pthread_create(&deatch_checker, NULL, routine_death, &p) != 0)
 	{
 		sem_wait(s->stdout);
 		printf("Thread creation failed!");
