@@ -4,16 +4,19 @@ SRC_DIR		:= src
 OBJ_DIR		:= obj
 LIB_DIR		:= lib
 
-# TODO wildcards
-# SRC			:= main.c
-SRC			:= $(wildcard *.c */*.c)
+SRC			:= bootstrap.c \
+               main.c \
+               philo.c \
+               philo_actions.c \
+               run.c \
+               utils.c \
+               utils2.c
 
 OBJ			:= $(SRC:%.c=$(OBJ_DIR)/%.o)
 
-# TODO correct flags
 CC			:= cc
 CPPFLAGS	:= -I . -MMD -MP
-CFLAGS		:= -g -Wall -Werror -Wextra#-fsanitize=thread
+CFLAGS		:= -Wall -Werror -Wextra#-g -fsanitize=thread
 LDFLAGS		:= -pthread#-fsanitize=thread
 LDLIBS		:=
 

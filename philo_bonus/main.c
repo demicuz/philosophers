@@ -6,13 +6,12 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:04:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:28:17 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:55:28 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo_bonus.h>
 
-// TODO remove unused headers
 #include <stdio.h>
 #include <stdlib.h>
 

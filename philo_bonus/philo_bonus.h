@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:54:11 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:55:51 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ philo_num shouldn't be greater than 254.\n\
 Examples: ./philo_bonus 5 800 200 200\n\
           ./philo_bonus 5 800 200 200 1\n"
 
-// TODO maybe other than 100? And rename this
 # define CHECKER_WAIT_TIME 100
 # define PHILO_WAIT_TIME 500
 
