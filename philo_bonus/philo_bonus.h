@@ -6,17 +6,17 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:25:49 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:35:36 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_BONUS_H
 # define PHILO_BONUS_H
 
-#include <sys/time.h>
-#include <sys/types.h>
-#include <semaphore.h>
-#include <stdbool.h>
+# include <sys/time.h>
+# include <sys/types.h>
+# include <semaphore.h>
+# include <stdbool.h>
 
 # define HELP_MESSAGE "\
 Bad arguments!\n\
@@ -29,8 +29,8 @@ Examples: ./philo_bonus 5 800 200 200\n\
           ./philo_bonus 5 800 200 200 1\n"
 
 // TODO maybe other than 100? And rename this
-#define CHECKER_WAIT_TIME 100
-#define PHILO_WAIT_TIME 500
+# define CHECKER_WAIT_TIME 100
+# define PHILO_WAIT_TIME 500
 
 typedef struct s_args
 {

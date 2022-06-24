@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:05:47 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:07:42 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:37:00 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool	wait_simulation_end(t_args *a, t_state *s)
 
 bool	run_simulation(t_args *a, t_state *s)
 {
-	struct timeval	start;
+	struct timeval	start; // TODO put in state
 	unsigned int	i;
 
 	gettimeofday(&start, NULL);

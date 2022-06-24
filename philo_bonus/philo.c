@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:09:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:29:23 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:31:39 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,9 @@ void	init_philo(t_philo *p, t_args *a, t_state *s, unsigned int index)
 void	philo_routine(t_args *a, t_state *s, unsigned int index)
 {
 	t_philo			p;
-	int				must_eat_num;
 	unsigned int	magic_wait;
 
 	magic_wait = get_magic_wait_time(a);
-	must_eat_num = a->must_eat_num;
 	init_philo(&p, a, s, index);
 	think(&p, s);
 	magic_start_delay(a, index);
@@ -82,11 +80,12 @@ void	philo_routine(t_args *a, t_state *s, unsigned int index)
 	{
 		take_forks(&p, s);
 		eat(&p, a, s);
-		if (must_eat_num >= 0)
+		if (a->must_eat_num >= 0)
 		{
-			must_eat_num--;
-			if (must_eat_num == 0 && ((a->philo_num % 2 == 0 && index >= a->philo_num / 2)
-				|| (a->philo_num % 2 != 0 && index == a->philo_num - 1)))
+			a->must_eat_num--;
+			if (a->must_eat_num == 0
+				&& ((a->philo_num % 2 == 0 && index >= a->philo_num / 2)
+					|| (a->philo_num % 2 != 0 && index == a->philo_num - 1)))
 				exit(255);
 		}
 		take_a_nap(&p, a, s);
