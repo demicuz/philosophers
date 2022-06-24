@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 09:15:42 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 06:15:21 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ typedef void	*(*t_philo_routine)(void *philo_data);
 // utils
 int		is_num(const char *s);
 int		ft_atoi_safe(const char *str, int *err);
-long	time_passed(struct timeval *start);
-unsigned long	time_passed_micros(struct timeval *start);
+unsigned long	time_passed(struct timeval *start);
+// unsigned long	time_passed_micros(struct timeval *start);
 void	unlock_all_mutexes(pthread_mutex_t *mutexes, int n);
 
 // bootstrap
@@ -110,7 +110,7 @@ void	lock_and_check_death(t_philo *p);
 void	*routine(void *philo_data);
 void	terminate_if_all_eaten(t_philo *p);
 void	*routine_min_eaten(void *philo_data);
-void	die(t_philo *p, long now_millis);
+void	die(t_philo *p, long now_micros);
 void	*routine_death(void *philo_data);
 
 // run

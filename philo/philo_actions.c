@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:29 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 09:01:07 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 06:11:08 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,15 @@ void	lock_and_check_death(t_philo *p)
 void	take_forks(t_philo *p)
 {
 	lock_and_check_death(p);
-	printf("%ld %d is thinking\n", time_passed(p->start), p->index + 1);
+	printf("%ld %d is thinking\n", time_passed(p->start) / 1000, p->index + 1);
 	pthread_mutex_unlock(p->death_m);
 	pthread_mutex_lock(p->fork1_for_me);
 	lock_and_check_death(p);
-	printf("%ld %d has taken a fork\n", time_passed(p->start), p->index + 1);
+	printf("%ld %d has taken a fork\n", time_passed(p->start) / 1000, p->index + 1);
 	pthread_mutex_unlock(p->death_m);
 	pthread_mutex_lock(p->fork2_for_me);
 	lock_and_check_death(p);
-	printf("%ld %d has taken a fork\n", time_passed(p->start), p->index + 1);
+	printf("%ld %d has taken a fork\n", time_passed(p->start) / 1000, p->index + 1);
 	pthread_mutex_unlock(p->death_m);
 }
 
@@ -43,7 +43,7 @@ void	eat(t_philo *p)
 	unsigned long	now_micros;
 
 	lock_and_check_death(p);
-	now_micros = time_passed_micros(p->start);
+	now_micros = time_passed(p->start);
 	printf("%ld %d is eating\n", now_micros / 1000, p->index + 1);
 	pthread_mutex_unlock(p->death_m);
 	pthread_mutex_lock(p->last_eaten_m);
@@ -57,7 +57,7 @@ void	eat(t_philo *p)
 void	take_a_nap(t_philo *p)
 {
 	lock_and_check_death(p);
-	printf("%ld %d is sleeping\n", time_passed(p->start), p->index + 1);
+	printf("%ld %d is sleeping\n", time_passed(p->start) / 1000, p->index + 1);
 	pthread_mutex_unlock(p->death_m);
 	usleep(p->args->time_sleep * 1000);
 }

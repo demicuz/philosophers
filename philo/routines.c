@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 09:28:16 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 06:13:51 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	*routine_min_eaten(void *philo_data)
 	t_philo	*p;
 
 	p = philo_data;
-	printf("%d %d is thinking\n", 0, p->index + 1);
 	while (true)
 	{
 		take_forks(p);
@@ -59,11 +58,11 @@ void	*routine_min_eaten(void *philo_data)
 	}
 }
 
-void	die(t_philo *p, long now_millis)
+void	die(t_philo *p, long now_micros)
 {
 	pthread_mutex_lock(p->death_m);
 	if (!*p->death)
-		printf("%ld %d died\n", now_millis, p->index + 1);
+		printf("%ld %d died\n", now_micros / 1000, p->index + 1);
 	*p->death = true;
 	pthread_mutex_unlock(p->death_m);
 	pthread_mutex_unlock(p->last_eaten_m);
@@ -81,11 +80,11 @@ void	*routine_death(void *philo_data)
 	unsigned long	dt;
 
 	p = philo_data;
-	usleep(p->args->time_death * 1000 - time_passed_micros(p->start) + MIN_WAIT_TIME);
+	usleep(p->args->time_death * 1000 - time_passed(p->start) + MIN_WAIT_TIME);
 	while (true)
 	{
 		pthread_mutex_lock(p->last_eaten_m);
-		now_micros = time_passed_micros(p->start);
+		now_micros = time_passed(p->start);
 		dt = now_micros - p->last_eaten;
 		if (dt <= p->args->time_death * 1000)
 		{

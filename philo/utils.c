@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:40 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 08:57:29 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 06:14:14 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,17 @@ int	ft_atoi_safe(const char *str, int *err)
 }
 
 // Time passed since `start` in milliseconds
-long	time_passed(struct timeval *start)
-{
-	struct timeval	now;
+// unsigned long	time_passed(struct timeval *start)
+// {
+// 	struct timeval	now;
 
-	gettimeofday(&now, NULL);
-	return ((now.tv_sec - start->tv_sec) * 1000 +
-		((now.tv_usec - start->tv_usec) / 1000));
-}
+// 	gettimeofday(&now, NULL);
+// 	return ((now.tv_sec - start->tv_sec) * 1000 +
+// 		((now.tv_usec - start->tv_usec) / 1000));
+// }
 
 // Time passed since `start` in microseconds
-unsigned long	time_passed_micros(struct timeval *start)
+unsigned long	time_passed(struct timeval *start)
 {
 	struct timeval	now;
 
