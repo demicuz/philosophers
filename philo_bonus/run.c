@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:05:47 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:37:00 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:54:47 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,17 @@ bool	wait_simulation_end(t_args *a, t_state *s)
 
 	waitpid(-1, &wstatus, 0);
 	if (WEXITSTATUS(wstatus) != 255)
-		printf("%ld %d died\n", time_passed(s->start) / 1000, WEXITSTATUS(wstatus) + 1);
+		printf("%ld %d died\n", time_passed(&s->start) / 1000,
+			WEXITSTATUS(wstatus) + 1);
 	kill_all(s->pids, a->philo_num);
 	return (true);
 }
 
 bool	run_simulation(t_args *a, t_state *s)
 {
-	struct timeval	start; // TODO put in state
 	unsigned int	i;
 
-	gettimeofday(&start, NULL);
-	s->start = &start;
+	gettimeofday(&s->start, NULL);
 	i = 0;
 	while (i < a->philo_num)
 	{

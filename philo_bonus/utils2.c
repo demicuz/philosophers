@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:20:03 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:25:36 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:43:15 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ char	*get_philo_sem_name(int index)
 	return (result);
 }
 
+// *magic*
+// Using stupid hacks to overcome subject constraints.
 void	magic_start_delay(t_args *a, unsigned int index)
 {
 	if (a->philo_num % 2 == 0 && index >= a->philo_num / 2)
@@ -62,13 +64,17 @@ void	magic_start_delay(t_args *a, unsigned int index)
 		usleep(PHILO_WAIT_TIME);
 }
 
+// Top naming in action. This is used only for uneven number of philos.
+// Before searching for forks, each philo must wait exactly this time:
+// 1000 * max(2 * a->time_eat, a->time_sleep) + PHILO_WAIT_TIME
+// But it should also print that he's thinking! So I can't just `usleep()`.
 unsigned int	get_magic_wait_time(t_args *a)
 {
 	int	wat;
 
 	wat = 2 * a->time_eat - a->time_sleep;
 	if (a->philo_num % 2 != 0 && wat >= 0)
-		return(wat * 1000 + PHILO_WAIT_TIME);
+		return (wat * 1000 + PHILO_WAIT_TIME);
 	else
 		return (0);
 }

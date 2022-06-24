@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:09:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:31:39 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:41:40 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	set_philo_vars(t_philo *p, t_args *a, t_state *s, unsigned int index)
 	p->last_eaten_sem = s->last_eaten_sems[index];
 	p->last_eaten = 0;
 	p->args = a;
-	p->start = s->start;
+	p->start = &s->start;
 	p->stdout = s->stdout;
 }
 

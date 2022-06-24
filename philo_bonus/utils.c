@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:55:26 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:25:26 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:48:23 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,6 @@ unsigned long	time_passed(struct timeval *start)
 	struct timeval	now;
 
 	gettimeofday(&now, NULL);
-	return ((now.tv_sec - start->tv_sec) * 1000000 +
-		(now.tv_usec - start->tv_usec));
+	return ((now.tv_sec - start->tv_sec) * 1000000
+		+ (now.tv_usec - start->tv_usec));
 }

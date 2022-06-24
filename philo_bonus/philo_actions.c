@@ -18,7 +18,7 @@
 void	think(t_philo *p, t_state *s)
 {
 	sem_wait(s->stdout);
-	printf("%ld %d is thinking\n", time_passed(s->start) / 1000, p->index + 1);
+	printf("%ld %d is thinking\n", time_passed(&s->start) / 1000, p->index + 1);
 	sem_post(s->stdout);
 }
 
@@ -27,9 +27,9 @@ void	take_forks(t_philo *p, t_state *s)
 	sem_wait(s->forks);
 	sem_wait(s->forks);
 	sem_wait(s->stdout);
-	printf("%ld %d has taken a fork\n", time_passed(s->start) / 1000,
+	printf("%ld %d has taken a fork\n", time_passed(&s->start) / 1000,
 		p->index + 1);
-	printf("%ld %d has taken a fork\n", time_passed(s->start) / 1000,
+	printf("%ld %d has taken a fork\n", time_passed(&s->start) / 1000,
 		p->index + 1);
 	sem_post(s->stdout);
 }
@@ -39,7 +39,7 @@ void	eat(t_philo *p, t_args *a, t_state *s)
 	unsigned long	now_micros;
 
 	sem_wait(s->stdout);
-	now_micros = time_passed(s->start);
+	now_micros = time_passed(&s->start);
 	printf("%ld %d is eating\n", now_micros / 1000, p->index + 1);
 	sem_post(s->stdout);
 	sem_wait(p->last_eaten_sem);
@@ -53,7 +53,7 @@ void	eat(t_philo *p, t_args *a, t_state *s)
 void	take_a_nap(t_philo *p, t_args *a, t_state *s)
 {
 	sem_wait(s->stdout);
-	printf("%ld %d is sleeping\n", time_passed(s->start) / 1000, p->index + 1);
+	printf("%ld %d is sleeping\n", time_passed(&s->start) / 1000, p->index + 1);
 	sem_post(s->stdout);
 	usleep(a->time_sleep * 1000);
 }
