@@ -17,7 +17,7 @@ OBJ			:= $(SRC:%.c=$(OBJ_DIR)/%.o)
 CC			:= cc
 CPPFLAGS	:= -I . -MMD -MP
 
-CFLAGS		:= -pthread -Wall -Werror -Wextra -O1#-g -fsanitize=thread
+CFLAGS		:= -Wall -Werror -Wextra -O1#-g -fsanitize=thread
 LDFLAGS		:= -pthread#-fsanitize=thread
 LDLIBS		:=
 
