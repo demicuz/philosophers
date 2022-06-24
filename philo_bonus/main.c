@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:04:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 10:57:45 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 21:39:42 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	*routine_death(void *philo_data)
 	}
 }
 
-void	set_philo_vars(t_philo *p, t_args *a, t_state *s, int index)
+void	set_philo_vars(t_philo *p, t_args *a, t_state *s, unsigned int index)
 {
 	p->index = index;
 	p->last_eaten_sem = s->last_eaten_sems[index];
@@ -66,7 +66,7 @@ void	set_philo_vars(t_philo *p, t_args *a, t_state *s, int index)
 	p->stdout = s->stdout;
 }
 
-void	init_philo(t_philo *p, t_args *a, t_state *s, int index)
+void	init_philo(t_philo *p, t_args *a, t_state *s, unsigned int index)
 {
 	pthread_t	deatch_checker;
 
@@ -80,7 +80,7 @@ void	init_philo(t_philo *p, t_args *a, t_state *s, int index)
 	pthread_detach(deatch_checker);
 }
 
-void	magic_start_delay(t_args *a, int index)
+void	magic_start_delay(t_args *a, unsigned int index)
 {
 	if (a->philo_num % 2 == 0 && index >= a->philo_num / 2)
 		usleep(PHILO_WAIT_TIME);
@@ -101,7 +101,7 @@ unsigned int	get_magic_wait_time(t_args *a)
 		return (0);
 }
 
-void	philo_routine(t_args *a, t_state *s, int index)
+void	philo_routine(t_args *a, t_state *s, unsigned int index)
 {
 	t_philo			p;
 	int				must_eat_num;
@@ -144,7 +144,7 @@ bool	wait_simulation_end(t_args *a, t_state *s)
 bool	run_simulation(t_args *a, t_state *s)
 {
 	struct timeval	start;
-	int				i;
+	unsigned int	i;
 
 	gettimeofday(&start, NULL);
 	s->start = &start;
@@ -179,6 +179,22 @@ bool	parse_and_set_int(const char *s, int *n)
 		return (false);
 }
 
+bool	parse_and_set_uint(const char *s, unsigned int *n)
+{
+	int	err;
+	int	r;
+
+	err = 0;
+	if (is_num(s))
+	{
+		r = ft_atoi_safe(s, &err);
+		*n = r;
+		return (!err && r >= 0);
+	}
+	else
+		return (false);
+}
+
 // accept 4 or 5 arguments
 // must be integers equal to or greater than zero
 // the code is ugly af
@@ -187,17 +203,17 @@ bool	parse_args(t_args *a, int argc, const char *argv[])
 	a->must_eat_num = -1;
 	if (argc == 5)
 	{
-		return (parse_and_set_int(argv[1], &a->philo_num) && \
-			parse_and_set_int(argv[2], &a->time_death) && \
-			parse_and_set_int(argv[3], &a->time_eat) && \
-			parse_and_set_int(argv[4], &a->time_sleep));
+		return (parse_and_set_uint(argv[1], &a->philo_num) && \
+			parse_and_set_uint(argv[2], &a->time_death) && \
+			parse_and_set_uint(argv[3], &a->time_eat) && \
+			parse_and_set_uint(argv[4], &a->time_sleep));
 	}
 	else if (argc == 6)
 	{
-		return (parse_and_set_int(argv[1], &a->philo_num) && \
-			parse_and_set_int(argv[2], &a->time_death) && \
-			parse_and_set_int(argv[3], &a->time_eat) && \
-			parse_and_set_int(argv[4], &a->time_sleep) && \
+		return (parse_and_set_uint(argv[1], &a->philo_num) && \
+			parse_and_set_uint(argv[2], &a->time_death) && \
+			parse_and_set_uint(argv[3], &a->time_eat) && \
+			parse_and_set_uint(argv[4], &a->time_sleep) && \
 			parse_and_set_int(argv[5], &a->must_eat_num));
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 07:40:42 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 21:35:50 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct s_philo
 	t_args			*args;
 	struct timeval	*start;
 
-	int				index;
+	unsigned int	index;
 	int				times_eaten;
 
 	sem_t			*last_eaten_sem;

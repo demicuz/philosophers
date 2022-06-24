@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:55:26 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 10:52:56 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 21:38:00 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ char	*get_philo_sem_name(int index)
 
 void	cleanup(t_args *a, t_state *s)
 {
-	int	i;
+	unsigned int	i;
 
 	sem_unlink("/21_forks");
 	sem_unlink("/21_stdout");

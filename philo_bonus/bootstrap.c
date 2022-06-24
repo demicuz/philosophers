@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 18:52:45 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 03:10:25 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 21:37:42 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 bool	open_philo_semaphores(t_args *a, t_state *s)
 {
-	int	i;
+	unsigned int	i;
 
 	i = 0;
 	while (i < a->philo_num)
@@ -35,7 +35,7 @@ bool	open_philo_semaphores(t_args *a, t_state *s)
 // Terrible, terrible code
 bool	init_philo_semaphores(t_args *a, t_state *s)
 {
-	int		i;
+	unsigned int		i;
 
 	s->last_eaten_sem_names = malloc(sizeof(char *) * a->philo_num);
 	s->last_eaten_sems = malloc(sizeof(sem_t *) * a->philo_num);
