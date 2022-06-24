@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 21:35:50 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/24 22:25:49 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,12 @@
 #include <stdbool.h>
 
 # define HELP_MESSAGE "\
-Bad arguments\n\
+Bad arguments!\n\
+\n\
 Usage: ./philo_bonus philo_num t_death t_eat t_sleep [must_eat_num]\n\
+arguments are unsigned ints, must_eat_num is a signed int.\n\
+philo_num shouldn't be greater than 254.\n\
+\n\
 Examples: ./philo_bonus 5 800 200 200\n\
           ./philo_bonus 5 800 200 200 1\n"
 
@@ -72,24 +76,32 @@ typedef struct s_philo
 // bootstrap
 bool	init(t_args *a, t_state *s);
 
-// utils
-int		is_num(const char *s);
-int		ft_atoi_safe(const char *str, int *err);
-// unsigned long	time_passed(struct timeval *start);
-unsigned long	time_passed(struct timeval *start);
-void	kill_all(pid_t *pids, int n);
-int		ft_count_digits(int n);
-void	*ft_memcpy(void *dest, const void *src, size_t n);
-char	*get_philo_sem_name(int index);
+// run
+bool	wait_simulation_end(t_args *a, t_state *s);
+bool	run_simulation(t_args *a, t_state *s);
 
-// void	free_names(char **last_eaten_sem_names, int n);
-void	cleanup(t_args *a, t_state *s);
+// philo
+void	*routine_death(void *philo_data);
+void	set_philo_vars(t_philo *p, t_args *a, t_state *s, unsigned int index);
+void	init_philo(t_philo *p, t_args *a, t_state *s, unsigned int index);
+void	philo_routine(t_args *a, t_state *s, unsigned int index);
 
 // philo_actions
-// void	lock_and_check_death(t_philo *p, t_state *s);
 void	think(t_philo *p, t_state *s);
 void	take_forks(t_philo *p, t_state *s);
 void	eat(t_philo *p, t_args *a, t_state *s);
 void	take_a_nap(t_philo *p, t_args *a, t_state *s);
+
+// utils
+int		is_num(const char *s);
+int		ft_atoi_safe(const char *str, int *err);
+int		ft_count_digits(int n);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+unsigned long	time_passed(struct timeval *start);
+void	kill_all(pid_t *pids, int n);
+char	*get_philo_sem_name(int index);
+void	magic_start_delay(t_args *a, unsigned int index);
+unsigned int	get_magic_wait_time(t_args *a);
+void	cleanup(t_args *a, t_state *s);
 
 #endif
