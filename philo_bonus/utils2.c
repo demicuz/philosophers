@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:20:03 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 03:58:27 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 04:05:56 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	magic_start_delay(t_args *a, unsigned int index)
 // Top naming in action. This is used only for uneven number of philos.
 // Before searching for forks, each philo must wait exactly this time:
 // 1000 * max(2 * a->time_eat, a->time_sleep) + PHILO_WAIT_TIME
-// But it should also print that he's thinking! So I can't just `usleep()`.
+// But he should also print that he's thinking! So I can't just `usleep()`.
 unsigned int	get_magic_wait_time(t_args *a)
 {
 	int	wat;
