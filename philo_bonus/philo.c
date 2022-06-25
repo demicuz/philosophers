@@ -85,7 +85,7 @@ void	philo_routine(t_args *a, t_state *s, unsigned int index)
 	{
 		take_forks(&p, s);
 		eat(&p, a, s);
-		if (a->must_eat_num >= 0)
+		if (a->must_eat_num > 0)
 		{
 			a->must_eat_num--;
 			if (a->must_eat_num == 0
