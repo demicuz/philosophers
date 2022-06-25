@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:09:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:41:40 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 03:54:11 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 #include <pthread.h>
 #include <stdio.h>
 
+void	die(t_philo *p)
+{
+	sem_wait(p->stdout);
+	exit(p->index);
+}
+
 void	*routine_death(void *philo_data)
 {
 	t_philo			*p;
@@ -23,6 +29,8 @@ void	*routine_death(void *philo_data)
 	unsigned long	dt;
 
 	p = philo_data;
+	if (p->args->time_death == 0)
+		die(p);
 	usleep(p->args->time_death * 1000 - time_passed(p->start)
 		+ CHECKER_WAIT_TIME);
 	while (true)
@@ -36,10 +44,7 @@ void	*routine_death(void *philo_data)
 			usleep(p->args->time_death * 1000 - dt + CHECKER_WAIT_TIME);
 		}
 		else
-		{
-			sem_wait(p->stdout);
-			exit(p->index);
-		}
+			die(p);
 	}
 }
 

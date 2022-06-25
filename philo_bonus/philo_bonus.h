@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:55:51 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 03:56:54 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ bool			wait_simulation_end(t_args *a, t_state *s);
 bool			run_simulation(t_args *a, t_state *s);
 
 // philo
+void			die(t_philo *p);
 void			*routine_death(void *philo_data);
 void			set_philo_vars(t_philo *p, t_args *a, t_state *s,
 					unsigned int index);

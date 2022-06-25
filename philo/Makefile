@@ -6,6 +6,7 @@ LIB_DIR		:= lib
 
 SRC			:= bootstrap.c \
                bootstrap2.c \
+               magic.c \
                main.c \
                philo_actions.c \
                routines.c \

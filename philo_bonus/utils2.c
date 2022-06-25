@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:20:03 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:43:15 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 03:58:27 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	*get_philo_sem_name(int index)
 }
 
 // *magic*
-// Using stupid hacks to overcome subject constraints.
+// Using stupid hacks, yes.
 void	magic_start_delay(t_args *a, unsigned int index)
 {
 	if (a->philo_num % 2 == 0 && index >= a->philo_num / 2)

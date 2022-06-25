@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:04 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 09:04:16 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 03:57:39 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool	state_malloc(t_state *s, int philo_num)
 	s->philos = malloc(sizeof(pthread_t) * philo_num);
 	s->death_checkers = malloc(sizeof(pthread_t) * philo_num);
 	s->philos_data = malloc(sizeof(t_philo) * philo_num);
-	s->forks = malloc(sizeof(pthread_mutex_t) * philo_num * 2);
+	s->forks = malloc(sizeof(pthread_mutex_t) * philo_num);
 	s->last_eaten = malloc(sizeof(pthread_mutex_t) * philo_num);
 	return (s->philos && s->death_checkers && s->philos_data && s->forks
 		&& s->last_eaten);
@@ -72,30 +72,19 @@ bool	init_vars(t_state *s, t_args *args)
 // deadlock. With my initial configuration of open/closed forks it's impossible
 // at the start, and during the simulation it's impossible too, though I'm not
 // completely sure. So I left it the way it was, it won't harm anyway.
+// UPD: now I don't open/close mutexes, just stupid wait time hack. Still
+// switching forks is redundant, but нехай буде.
 void	give_forks(t_philo *philos_data, pthread_mutex_t *forks, int philo_num)
 {
 	int	i;
 
-	philos_data[0].fork2_for_me = &forks[philo_num * 2 - 1];
-	philos_data[0].fork2_for_neighbor = &forks[philo_num * 2 - 2];
-	philos_data[0].fork1_for_me = &forks[0];
-	philos_data[0].fork1_for_neighbor = &forks[1];
+	philos_data[0].right_fork = &forks[0];
+	philos_data[0].left_fork = &forks[philo_num - 1];
 	i = 1;
 	while (i < philo_num)
 	{
-		philos_data[i].fork1_for_me = &forks[i * 2];
-		philos_data[i].fork1_for_neighbor = &forks[i * 2 + 1];
-		philos_data[i].fork2_for_me = &forks[i * 2 - 1];
-		philos_data[i].fork2_for_neighbor = &forks[i * 2 - 2];
+		philos_data[i].right_fork = &forks[i - 1];
+		philos_data[i].left_fork = &forks[i];
 		i++;
 	}
-	i = 1;
-	while (i < philo_num)
-	{
-		pthread_mutex_lock(philos_data[i].fork1_for_me);
-		pthread_mutex_lock(philos_data[i].fork2_for_me);
-		i += 2;
-	}
-	if (philo_num % 2 == 1)
-		pthread_mutex_lock(philos_data[philo_num - 1].fork1_for_me);
 }

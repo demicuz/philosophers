@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:36 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/20 03:51:18 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 03:34:39 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	init_and_run(t_args *args)
 		exit_code = EXIT_FAILURE;
 	}
 	join_all(s.philos, s.death_checkers, args->philo_num);
-	destroy_mutexes(s.forks, args->philo_num * 2);
+	destroy_mutexes(s.forks, args->philo_num);
 	destroy_mutexes(s.last_eaten, args->philo_num);
 	pthread_mutex_destroy(&s.still_eating_m);
 	pthread_mutex_destroy(&s.death_m);

@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 01:55:52 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 03:58:48 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,17 @@
 # include <sys/time.h>
 
 # define HELP_MESSAGE "\
-Bad arguments\n\
+Bad arguments!\n\
+\n\
 Usage: ./philo philo_num t_death t_eat t_sleep [must_eat_num]\n\
+arguments are unsigned ints, must_eat_num is a signed int.\n\
+philo_num shouldn't be greater than 254.\n\
+\n\
 Examples: ./philo 5 800 200 200\n\
           ./philo 5 800 200 200 1\n"
 
 # define CHECKER_WAIT_TIME 100
+# define PHILO_WAIT_TIME 500
 
 typedef struct s_args
 {
@@ -44,10 +49,8 @@ typedef struct s_philo
 	struct timeval	*start;
 	int				times_eaten;
 
-	pthread_mutex_t	*fork1_for_me;
-	pthread_mutex_t	*fork2_for_me;
-	pthread_mutex_t	*fork1_for_neighbor;
-	pthread_mutex_t	*fork2_for_neighbor;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*all_forks;
 
 	long			last_eaten;
@@ -101,6 +104,7 @@ bool			init_eat_death_mutexes(t_state *s, t_args *args);
 bool			init_mutexes(t_state *s, t_args *args);
 
 // philo_actions
+void			think(t_philo *p);
 void			lock_and_check_death(t_philo *p);
 void			take_forks(t_philo *p);
 void			eat(t_philo *p);
@@ -119,5 +123,9 @@ void			join_all(pthread_t *philos, pthread_t *death_checkers,
 					int philo_num);
 void			cleanup(t_state *s);
 int				init_and_run(t_args *args);
+
+// magic
+void			magic_start_delay(t_args *a, unsigned int index);
+unsigned int	get_magic_wait_time(t_args *a);
 
 #endif

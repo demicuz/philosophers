@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 21:27:43 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/23 09:04:30 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/25 03:25:56 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool	init_eat_death_mutexes(t_state *s, t_args *args)
 	if (pthread_mutex_init(&s->still_eating_m, NULL) != 0 || \
 		pthread_mutex_init(&s->death_m, NULL) != 0)
 	{
-		destroy_mutexes(s->forks, args->philo_num * 2);
+		destroy_mutexes(s->forks, args->philo_num);
 		pthread_mutex_destroy(&s->still_eating_m);
 		pthread_mutex_destroy(&s->death_m);
 		return (false);
@@ -30,7 +30,7 @@ bool	init_mutexes(t_state *s, t_args *args)
 	unsigned int	i;
 
 	i = 0;
-	while (i < args->philo_num * 2)
+	while (i < args->philo_num)
 	{
 		if (pthread_mutex_init(&s->forks[i], NULL) != 0)
 		{
@@ -44,7 +44,7 @@ bool	init_mutexes(t_state *s, t_args *args)
 	{
 		if (pthread_mutex_init(&s->last_eaten[i], NULL) != 0)
 		{
-			destroy_mutexes(s->forks, args->philo_num * 2);
+			destroy_mutexes(s->forks, args->philo_num);
 			destroy_mutexes(s->last_eaten, i);
 			return (false);
 		}
