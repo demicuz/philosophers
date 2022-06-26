@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:09:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/26 06:01:24 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 08:03:11 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,17 +84,15 @@ void	philo_routine(t_args *a, t_state *s, unsigned int index)
 	{
 		take_forks(&p, s);
 		eat(&p, a, s);
-		if (a->must_eat_num > 0)
-		{
-			a->must_eat_num--;
-			if (a->must_eat_num == 0
-				&& ((a->philo_num % 2 == 0 && index >= a->philo_num / 2)
-					|| (a->philo_num % 2 != 0 && index == a->philo_num - 1)))
-				exit(255);
-		}
 		take_a_nap(&p, a, s);
 		think(&p, s);
 		if (a->philo_num % 2 != 0)
 			usleep(magic_wait);
+		if (a->must_eat_num > 0)
+		{
+			a->must_eat_num--;
+			if (a->must_eat_num == 0)
+				exit(255);
+		}
 	}
 }
