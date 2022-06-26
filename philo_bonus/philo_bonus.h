@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 19:02:20 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 03:56:54 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 05:58:39 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ int				ft_count_digits(int n);
 void			*ft_memcpy(void *dest, const void *src, size_t n);
 void			kill_all(pid_t *pids, int n);
 char			*get_philo_sem_name(int index);
-void			magic_start_delay(t_args *a, unsigned int index);
 void			cleanup(t_args *a, t_state *s);
 
 unsigned long	time_passed(struct timeval *start);

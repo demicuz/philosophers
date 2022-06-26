@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:09:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 03:54:11 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 05:59:41 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ void	philo_routine(t_args *a, t_state *s, unsigned int index)
 	magic_wait = get_magic_wait_time(a);
 	init_philo(&p, a, s, index);
 	think(&p, s);
-	magic_start_delay(a, index);
 	while (true)
 	{
 		take_forks(&p, s);

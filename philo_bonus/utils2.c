@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:20:03 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 04:05:56 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 05:58:33 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,6 @@ char	*get_philo_sem_name(int index)
 		i--;
 	}
 	return (result);
-}
-
-// *magic*
-// Using stupid hacks, yes.
-void	magic_start_delay(t_args *a, unsigned int index)
-{
-	if (a->philo_num % 2 == 0 && index >= a->philo_num / 2)
-		usleep(PHILO_WAIT_TIME);
-	else if (a->philo_num % 2 != 0 && index == a->philo_num - 1)
-		usleep(a->time_eat * 1000 + PHILO_WAIT_TIME * 2);
-	else if (a->philo_num % 2 != 0 && index >= a->philo_num / 2)
-		usleep(PHILO_WAIT_TIME);
 }
 
 // Top naming in action. This is used only for uneven number of philos.
