@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 03:50:39 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 03:23:05 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 08:57:32 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	think(t_philo *p, t_state *s)
 
 void	take_forks(t_philo *p, t_state *s)
 {
-	sem_wait(s->forks);
 	sem_wait(s->forks);
 	sem_wait(s->stdout);
 	printf("%ld %d has taken a fork\n", time_passed(&s->start) / 1000,
@@ -46,7 +45,6 @@ void	eat(t_philo *p, t_args *a, t_state *s)
 	p->last_eaten = now_micros;
 	sem_post(p->last_eaten_sem);
 	usleep(a->time_eat * 1000);
-	sem_post(s->forks);
 	sem_post(s->forks);
 }
 

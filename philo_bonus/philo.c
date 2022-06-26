@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:09:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/26 08:03:11 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 08:53:21 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	init_philo(t_philo *p, t_args *a, t_state *s, unsigned int index)
 	pthread_detach(death_checker);
 }
 
+// Is ugly af. Shame on me.
 void	philo_routine(t_args *a, t_state *s, unsigned int index)
 {
 	t_philo			p;
@@ -86,8 +87,7 @@ void	philo_routine(t_args *a, t_state *s, unsigned int index)
 		eat(&p, a, s);
 		take_a_nap(&p, a, s);
 		think(&p, s);
-		if (a->philo_num % 2 != 0)
-			usleep(magic_wait);
+		usleep(magic_wait);
 		if (a->must_eat_num > 0)
 		{
 			a->must_eat_num--;

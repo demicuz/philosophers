@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:20:03 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/26 05:58:33 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 08:53:45 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,16 @@ char	*get_philo_sem_name(int index)
 	return (result);
 }
 
-// Top naming in action. This is used only for uneven number of philos.
-// Before searching for forks, each philo must wait exactly this time:
-// 1000 * max(2 * a->time_eat, a->time_sleep) + PHILO_WAIT_TIME
-// But he should also print that he's thinking! So I can't just `usleep()`.
+// Top naming in action. Don't try to understand this mess. This is a hack.
 unsigned int	get_magic_wait_time(t_args *a)
 {
 	int	wat;
 
-	wat = 2 * a->time_eat - a->time_sleep;
-	if (a->philo_num % 2 != 0 && wat >= 0)
+	if (a->philo_num % 2 == 1)
+		wat = 2 * a->time_eat - a->time_sleep;
+	else
+		wat = a->time_eat - a->time_sleep;
+	if (wat >= 0)
 		return (wat * 1000 + PHILO_WAIT_TIME);
 	else
 		return (0);

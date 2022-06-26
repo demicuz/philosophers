@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 18:52:45 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/24 22:51:18 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 08:51:44 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ bool	init(t_args *a, t_state *s)
 {
 	sem_unlink("/21_forks");
 	sem_unlink("/21_stdout");
-	s->forks = sem_open("/21_forks", O_CREAT | O_EXCL, S_IRWXU, a->philo_num);
+	s->forks = sem_open("/21_forks", O_CREAT | O_EXCL, S_IRWXU,
+		a->philo_num / 2);
 	s->stdout = sem_open("/21_stdout", O_CREAT | O_EXCL, S_IRWXU, 1);
 	s->pids = malloc(sizeof(pid_t) * a->philo_num);
 	if (s->forks == SEM_FAILED || s->stdout == SEM_FAILED || !s->pids
