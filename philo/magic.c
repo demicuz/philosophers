@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/25 03:17:38 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 03:18:15 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 04:00:27 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 void	magic_start_delay(t_args *a, unsigned int index)
 {
 	if (a->philo_num % 2 == 0 && index % 2 == 1)
-		usleep(PHILO_WAIT_TIME);
+		usleep(MAGIC_START_DELAY);
 	else if (a->philo_num % 2 != 0 && index == a->philo_num - 1)
-		usleep(a->time_eat * 1000 + PHILO_WAIT_TIME * 2);
+		usleep(a->time_eat * 1000 + PHILO_WAIT_TIME);
 	else if (a->philo_num % 2 != 0 && index % 2 == 1)
-		usleep(PHILO_WAIT_TIME);
+		usleep(MAGIC_START_DELAY);
 }
 
 // Top naming in action. This is used only for uneven number of philos.

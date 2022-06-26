@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 03:58:48 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 04:02:14 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@ philo_num shouldn't be greater than 254.\n\
 Examples: ./philo 5 800 200 200\n\
           ./philo 5 800 200 200 1\n"
 
+// In microseconds
 # define CHECKER_WAIT_TIME 100
 # define PHILO_WAIT_TIME 500
+# define MAGIC_START_DELAY 8000
 
 typedef struct s_args
 {
