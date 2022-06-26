@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 16:02:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/25 03:59:13 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 06:02:03 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ void	*routine(void *philo_data)
 		take_forks(p);
 		eat(p);
 		take_a_nap(p);
+		think(p);
 		if (p->args->philo_num % 2 != 0)
 			usleep(magic_wait);
-		think(p);
 	}
 }
 
@@ -67,9 +67,9 @@ void	*routine_min_eaten(void *philo_data)
 		if (p->times_eaten == p->args->must_eat_num)
 			terminate_if_all_eaten(p);
 		take_a_nap(p);
+		think(p);
 		if (p->args->philo_num % 2 != 0)
 			usleep(magic_wait);
-		think(p);
 	}
 }
 

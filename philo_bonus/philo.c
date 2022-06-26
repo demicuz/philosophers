@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 22:09:33 by psharen           #+#    #+#             */
-/*   Updated: 2022/06/26 05:59:41 by psharen          ###   ########.fr       */
+/*   Updated: 2022/06/26 06:01:24 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ void	philo_routine(t_args *a, t_state *s, unsigned int index)
 				exit(255);
 		}
 		take_a_nap(&p, a, s);
+		think(&p, s);
 		if (a->philo_num % 2 != 0)
 			usleep(magic_wait);
-		think(&p, s);
 	}
 }
